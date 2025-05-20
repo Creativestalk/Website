@@ -1,0 +1,122 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
+
+:root {
+  --orange-primary: #FFA500;
+  --yellow-accent: #FEA700;
+  --dark-bg: #0A0A0A;
+  --dark-card: #121212;
+  --gray-light: #E0E0E0;
+  --gray-medium: #9E9E9E;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--dark-bg);
+  color: white;
+  font-family: 'Inter', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Poppins', sans-serif;
+}
+
+.highlight-orange {
+  color: var(--orange-primary);
+}
+
+.highlight-yellow {
+  color: var(--yellow-accent);
+}
+
+.btn-primary {
+  @apply bg-[#FFA500] text-white font-medium py-3 px-6 rounded-md transition-all duration-300 hover:bg-opacity-90 hover:shadow-[0_0_15px_rgba(255,165,0,0.5)];
+}
+
+.btn-outline {
+  @apply border border-[#FFA500] text-[#FFA500] font-medium py-3 px-6 rounded-md transition-all duration-300 hover:bg-[#FFA500] hover:bg-opacity-10 hover:shadow-[0_0_15px_rgba(255,165,0,0.25)];
+}
+
+.navbar-sticky {
+  @apply fixed top-0 left-0 right-0 z-50 bg-opacity-95 backdrop-blur-sm shadow-lg transition-all duration-300;
+  background-color: rgba(10, 10, 10, 0.95);
+}
+
+.service-card {
+  @apply bg-dark-card bg-opacity-80 backdrop-blur-sm p-6 rounded-lg transition-all duration-300 cursor-pointer;
+  border: 1px solid rgba(255, 165, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.service-card:hover {
+  border-color: rgba(255, 165, 0, 0.2);
+  box-shadow: 0 8px 30px rgba(255, 165, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.service-icon-wrapper {
+  @apply p-3 rounded-lg bg-dark-lighter bg-opacity-50 transition-all duration-300;
+  border: 1px solid rgba(255, 165, 0, 0.1);
+}
+
+.service-card:hover .service-icon-wrapper {
+  @apply bg-opacity-70;
+  border-color: rgba(255, 165, 0, 0.2);
+  box-shadow: 0 0 15px rgba(255, 165, 0, 0.2);
+}
+
+.service-icon {
+  @apply text-primary transition-all duration-300;
+}
+
+.service-card:hover .service-icon {
+  transform: scale(1.1);
+}
+
+.service-feature {
+  @apply py-2 px-4 bg-dark-lighter bg-opacity-40 rounded-md text-sm text-gray-light transition-all duration-300;
+  border: 1px solid rgba(255, 165, 0, 0.05);
+}
+
+.service-feature:hover {
+  @apply bg-opacity-60;
+  border-color: rgba(255, 165, 0, 0.15);
+}
+
+.carousel-container {
+  @apply overflow-x-hidden relative;
+}
+
+.carousel-track {
+  @apply flex transition-transform duration-500;
+}
+
+.carousel-item {
+  @apply flex-shrink-0 px-2;
+}
+
+.form-input {
+  @apply w-full p-3 bg-[#1A1A1A] border border-gray-700 rounded-md text-white focus:border-[#FFA500] focus:outline-none focus:ring-1 focus:ring-[#FFA500] transition-all duration-300;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+.animate-delay-100 { animation-delay: 0.1s; }
+.animate-delay-200 { animation-delay: 0.2s; }
+.animate-delay-300 { animation-delay: 0.3s; }
+.animate-delay-400 { animation-delay: 0.4s; }
+.animate-delay-500 { animation-delay: 0.5s; }
