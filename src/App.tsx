@@ -15,10 +15,18 @@ function App() {
     <div className="bg-dark text-white">
       <Navbar />
       <main>
-        <HeroSection />
-        <ServicesSection />
-        <WorksSection />
-        <ContactSection />
+        <section id="home">
+          <HeroSection />
+        </section>
+        <section id="services">
+          <ServicesSection />
+        </section>
+        <section id="works">
+          <WorksSection />
+        </section>
+        <section id="contact">
+          <ContactSection />
+        </section>
       </main>
       <Footer />
     </div>
