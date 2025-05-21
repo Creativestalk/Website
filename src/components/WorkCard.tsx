@@ -8,12 +8,16 @@ interface WorkCardProps {
 }
 
 const WorkCard: React.FC<WorkCardProps> = ({ work, index }) => {
+  const handleClick = () => {
+    window.open(work.youtubeUrl, '_blank');
+  };
+
   return (
     <div 
       className="carousel-item w-full sm:w-1/2 lg:w-1/3 flex-shrink-0 animate-fade-in" 
       style={{ animationDelay: `${0.15 * index}s` }}
     >
-      <div className="relative group overflow-hidden rounded-lg">
+      <div className="relative group overflow-hidden rounded-lg cursor-pointer" onClick={handleClick}>
         <img 
           src={work.thumbnail} 
           alt={work.title} 

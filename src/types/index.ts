@@ -10,7 +10,7 @@ export interface WorkItem {
   title: string;
   views?: string;
   thumbnail: string;
-  videoUrl?: string;
+  youtubeUrl: string;
 }
 
 export interface NavItem {

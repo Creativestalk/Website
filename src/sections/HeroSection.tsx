@@ -43,15 +43,6 @@ const HeroSection: React.FC = () => {
               Let's collaborate on something amazing today. Reach out to us now!
             </p>
           </div>
-          
-          <div className="mt-10 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 animate-fade-in animate-delay-400">
-            <a href="#contact" className="btn-primary">
-              Get in Touch
-            </a>
-            <a href="#services" className="btn-outline">
-              Our Services
-            </a>
-          </div>
         </div>
         
         <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce-slow">
