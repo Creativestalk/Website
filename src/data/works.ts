@@ -5,35 +5,35 @@ export const workItems: WorkItem[] = [
     id: 'teliyadhe',
     title: 'Teliyadhe',
     views: '500K+ Views',
-    thumbnail: 'https://images.pexels.com/photos/2873486/pexels-photo-2873486.jpeg',
-    videoUrl: '#'
+    thumbnail: 'https://img.youtube.com/vi/2n4XaTwcs9k/hqdefault.jpg',
+    youtubeUrl: 'https://youtu.be/2n4XaTwcs9k?si=OcQMHgAv7ZW4d8TE',
   },
   {
-    id: 'corporate-ad',
-    title: 'Corporate Ad Campaign',
-    views: '250K+ Views',
-    thumbnail: 'https://images.pexels.com/photos/3379943/pexels-photo-3379943.jpeg',
-    videoUrl: '#'
+    id: 'Modatisarike',
+    title: 'Modatisarike',
+    views: '600K+ Views',
+    thumbnail: 'https://img.youtube.com/vi/J3UXoWfk9I4/hqdefault.jpg',
+    youtubeUrl: 'https://www.youtube.com/watch?v=J3UXoWfk9I4',
   },
   {
-    id: 'wedding-highlights',
-    title: 'Wedding Highlights',
-    views: '120K+ Views',
-    thumbnail: 'https://images.pexels.com/photos/1444442/pexels-photo-1444442.jpeg',
-    videoUrl: '#'
+    id: 'Samayam',
+    title: 'Samayam',
+    views: '70k+ Views',
+    thumbnail: 'https://img.youtube.com/vi/rwFbnbtCv5w/hqdefault.jpg ',
+    youtubeUrl: 'http://youtube.com/watch?v=rwFbnbtCv5w',
   },
   {
-    id: 'animation-reel',
-    title: 'Animation Showcase',
-    views: '180K+ Views',
-    thumbnail: 'https://images.pexels.com/photos/2110951/pexels-photo-2110951.jpeg',
-    videoUrl: '#'
+    id: 'tones',
+    title: 'Tones AD Video',
+    views: '35k+ Views',
+    thumbnail: 'https://img.youtube.com/vi/cIQKaxepnMQ/hqdefault.jpg ',
+    youtubeUrl: 'http://youtube.com/watch?v=cIQKaxepnMQ',
   },
   {
     id: 'music-video',
-    title: 'Music Video Production',
-    views: '320K+ Views',
-    thumbnail: 'https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg',
-    videoUrl: '#'
-  }
+    title: 'Teliyadhe Female Cover',
+    views: '16k Views',
+    thumbnail: 'https://img.youtube.com/vi/ZxeXpIIy7HY/hqdefault.jpg',
+    youtubeUrl: 'https://www.youtube.com/watch?v=ZxeXpIIy7HY',
+  },
 ];
