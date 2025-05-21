@@ -4,77 +4,113 @@ import { navItems } from '../data/navItems';
 import Logo from './Logo';
 
 const Navbar: React.FC = () => {
-  const [isSticky, setIsSticky] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('home');
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsSticky(window.scrollY > 100);
+      const sections = navItems.map(item => item.id);
+      const current = sections.find(section => {
+        const element = document.getElementById(section);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          return rect.top <= 100 && rect.bottom >= 100;
+        }
+        return false;
+      });
+      if (current) {
+        setActiveSection(current);
+      }
     };
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    e.preventDefault();
+    const element = document.getElementById(id);
+    if (element) {
+      const yOffset = -80;
+      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+    setMobileMenuOpen(false);
+  };
+
   return (
-    <nav className={`w-full py-4 transition-all duration-300 ${isSticky ? 'navbar-sticky' : 'absolute top-0 left-0 right-0 z-50'}`}>
-      <div className="container mx-auto px-4 md:px-6">
-        <div className="flex justify-between items-center">
-          <a href="#home" className="flex items-center space-x-2">
-            <Logo />
-            <span className="text-xl font-heading font-bold">Creativestalk</span>
+    <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-2xl rounded-2xl shadow-lg navbar-floating border border-white/10 backdrop-blur-lg">
+      <div className="px-4 py-3">
+        <div className="flex items-center justify-between">
+          <a
+            href="#home"
+            onClick={(e) => handleNavClick(e, 'home')}
+            className="flex items-center space-x-2 group"
+          >
+            <Logo className="h-6 w-6 text-primary transition-all duration-300 group-hover:glow-effect" />
+            <span className="text-base font-heading font-bold bg-gradient-to-r from-primary to-white bg-clip-text text-transparent">
+              Creativestalk
+            </span>
           </a>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-6">
             {navItems.map(item => (
-              <a 
+              <a
                 key={item.id}
-                href={item.href}
-                className="text-gray-light hover:text-primary transition-colors duration-300"
+                href={`#${item.id}`}
+                onClick={(e) => handleNavClick(e, item.id)}
+                className={`nav-link ${
+                  activeSection === item.id ? 'text-primary' : 'text-gray-light'
+                }`}
               >
                 {item.label}
               </a>
             ))}
-            <a 
-              href="#contact" 
-              className="btn-primary"
+            <a
+              href="#contact"
+              onClick={(e) => handleNavClick(e, 'contact')}
+              className="btn-primary text-sm px-4 py-2"
             >
               Let's Talk
             </a>
           </div>
 
           {/* Mobile Menu Button */}
-          <button 
+          <button
             className="md:hidden text-white focus:outline-none"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             {mobileMenuOpen ? (
-              <X className="h-6 w-6" />
+              <X className="h-5 w-5" />
             ) : (
-              <Menu className="h-6 w-6" />
+              <Menu className="h-5 w-5" />
             )}
           </button>
         </div>
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden mt-4 py-2 bg-dark-lighter rounded-lg animate-fade-in">
+          <div className="md:hidden mt-3 py-2 backdrop-blur-lg bg-[#1F1F1F] bg-opacity-80 rounded-lg animate-fade-in">
             {navItems.map(item => (
-              <a 
+              <a
                 key={item.id}
-                href={item.href}
-                className="block py-2 px-4 text-gray-light hover:text-primary hover:bg-dark-card transition-colors duration-300"
-                onClick={() => setMobileMenuOpen(false)}
+                href={`#${item.id}`}
+                onClick={(e) => handleNavClick(e, item.id)}
+                className={`block py-2 px-4 transition-colors duration-300 text-sm ${
+                  activeSection === item.id
+                    ? 'text-primary bg-dark-card'
+                    : 'text-gray-light hover:text-primary hover:bg-dark-card'
+                }`}
               >
                 {item.label}
               </a>
             ))}
-            <div className="px-4 pt-2 pb-3">
-              <a 
-                href="#contact" 
-                className="block w-full text-center btn-primary"
-                onClick={() => setMobileMenuOpen(false)}
+            <div className="px-4 pt-2 pb-2">
+              <a
+                href="#contact"
+                onClick={(e) => handleNavClick(e, 'contact')}
+                className="block w-full text-center btn-primary text-sm py-2"
               >
                 Let's Talk
               </a>
@@ -86,4 +122,4 @@ const Navbar: React.FC = () => {
   );
 };
 
-export default Navbar
+export default Navbar;
