@@ -27,8 +27,11 @@ function App() {
         <Navbar />
         <main>
           <HeroSection />
+          <div className="section-divider mx-auto max-w-7xl px-4" />
           <ServicesSection />
+          <div className="section-divider mx-auto max-w-7xl px-4" />
           <WorksSection />
+          <div className="section-divider mx-auto max-w-7xl px-4" />
           <ContactSection />
         </main>
         <Footer />
