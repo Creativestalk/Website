@@ -9,7 +9,7 @@ const Navbar: React.FC = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = navItems.map(item => item.id);
+      const sections = [...navItems.map(item => item.id), 'contact'];
       const current = sections.find(section => {
         const element = document.getElementById(section);
         if (element) {
@@ -39,11 +39,11 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-2xl rounded-2xl shadow-lg navbar-floating border border-white/10 backdrop-blur-lg">
-      <div className="px-4 py-3">
+    <nav className="navbar-floating">
+      <div className="navbar-inner">
         <div className="flex items-center justify-between">
-          <a
-            href="#home"
+          <a 
+            href="#home" 
             onClick={(e) => handleNavClick(e, 'home')}
             className="flex items-center space-x-2 group"
           >
@@ -54,30 +54,28 @@ const Navbar: React.FC = () => {
           </a>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-6">
+          <div className="hidden md:flex items-center space-x-8">
             {navItems.map(item => (
-              <a
+              <a 
                 key={item.id}
                 href={`#${item.id}`}
                 onClick={(e) => handleNavClick(e, item.id)}
-                className={`nav-link ${
-                  activeSection === item.id ? 'text-primary' : 'text-gray-light'
-                }`}
+                className={`nav-link ${activeSection === item.id ? 'text-primary' : 'text-gray-light hover:text-primary'}`}
               >
                 {item.label}
               </a>
             ))}
-            <a
+            <a 
               href="#contact"
               onClick={(e) => handleNavClick(e, 'contact')}
-              className="btn-primary text-sm px-4 py-2"
+              className={`btn-primary text-sm px-6 py-2.5 ${activeSection === 'contact' ? 'bg-opacity-90' : ''}`}
             >
               Let's Talk
             </a>
           </div>
 
           {/* Mobile Menu Button */}
-          <button
+          <button 
             className="md:hidden text-white focus:outline-none"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
@@ -91,26 +89,28 @@ const Navbar: React.FC = () => {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden mt-3 py-2 backdrop-blur-lg bg-[#1F1F1F] bg-opacity-80 rounded-lg animate-fade-in">
+          <div className="md:hidden mt-4 py-2 backdrop-blur-lg bg-dark/80 rounded-lg animate-fade-in">
             {navItems.map(item => (
-              <a
+              <a 
                 key={item.id}
                 href={`#${item.id}`}
                 onClick={(e) => handleNavClick(e, item.id)}
-                className={`block py-2 px-4 transition-colors duration-300 text-sm ${
-                  activeSection === item.id
-                    ? 'text-primary bg-dark-card'
-                    : 'text-gray-light hover:text-primary hover:bg-dark-card'
+                className={`block py-2.5 px-4 transition-colors duration-300 text-sm ${
+                  activeSection === item.id 
+                    ? 'text-primary bg-white/5' 
+                    : 'text-gray-light hover:text-primary hover:bg-white/5'
                 }`}
               >
                 {item.label}
               </a>
             ))}
             <div className="px-4 pt-2 pb-2">
-              <a
+              <a 
                 href="#contact"
                 onClick={(e) => handleNavClick(e, 'contact')}
-                className="block w-full text-center btn-primary text-sm py-2"
+                className={`block w-full text-center btn-primary text-sm py-2.5 ${
+                  activeSection === 'contact' ? 'bg-opacity-90' : ''
+                }`}
               >
                 Let's Talk
               </a>

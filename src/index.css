@@ -4,7 +4,6 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
 
-/* Root Variables */
 :root {
   --orange-primary: #FFA500;
   --yellow-accent: #FEA700;
@@ -14,9 +13,9 @@
   --gray-medium: #9E9E9E;
 }
 
-/* Base Styles */
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 100px; /* Add padding for fixed navbar */
 }
 
 body {
@@ -29,7 +28,6 @@ h1, h2, h3, h4, h5, h6 {
   font-family: 'Poppins', sans-serif;
 }
 
-/* Utilities */
 .highlight-orange {
   color: var(--orange-primary);
 }
@@ -38,50 +36,27 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--yellow-accent);
 }
 
-/* Buttons */
 .btn-primary {
-  @apply bg-[#FFA500] text-white font-medium rounded-md transition-all duration-300;
-}
-.btn-primary:hover {
-  @apply bg-opacity-90;
-  box-shadow: 0 0 15px rgba(255, 165, 0, 0.5);
+  @apply bg-[#FFA500] text-white font-medium rounded-md transition-all duration-300 hover:bg-opacity-90 hover:shadow-[0_0_15px_rgba(255,165,0,0.5)];
 }
 
 .btn-outline {
-  @apply border border-[#FFA500] text-[#FFA500] font-medium py-3 px-6 rounded-md transition-all duration-300;
-}
-.btn-outline:hover {
-  @apply bg-opacity-10;
-  background-color: #FFA5001A;
-  box-shadow: 0 0 15px rgba(255, 165, 0, 0.25);
+  @apply border border-[#FFA500] text-[#FFA500] font-medium py-3 px-6 rounded-md transition-all duration-300 hover:bg-[#FFA500] hover:bg-opacity-10 hover:shadow-[0_0_15px_rgba(255,165,0,0.25)];
 }
 
-/* Navbar */
 .navbar-floating {
-  @apply backdrop-blur-md shadow-lg;
-  background: rgba(31, 31, 31, 0.95);
-  border-radius: 16px;
-  position: relative;
+  @apply fixed top-0 left-0 right-0 w-full z-50 backdrop-blur-md bg-dark/60 border-b border-white/10;
+  transition: all 0.3s ease-in-out;
 }
 
-.navbar-floating::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 16px;
-  padding: 2px;
-  background: linear-gradient(90deg, transparent, rgba(255, 168, 0, 0.4), transparent);
-  background-size: 200% 200%;
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  animation: border-glow 3s linear infinite;
+.navbar-inner {
+  @apply max-w-7xl mx-auto px-4 py-4 md:py-5;
 }
 
 .nav-link {
   @apply relative text-sm font-medium transition-colors duration-300;
 }
+
 .nav-link::after {
   content: '';
   position: absolute;
@@ -94,83 +69,13 @@ h1, h2, h3, h4, h5, h6 {
   transform: translateX(-50%);
   opacity: 0;
 }
+
 .nav-link:hover::after,
 .nav-link.text-primary::after {
   width: 100%;
   opacity: 1;
 }
 
-/* Glow Effect */
-.glow-effect {
-  filter: drop-shadow(0 0 8px rgba(255, 165, 0, 0.6));
-}
-
-/* Service Cards */
-.service-card {
-  @apply bg-dark-card bg-opacity-80 backdrop-blur-sm p-6 rounded-lg transition-all duration-300 cursor-pointer;
-  border: 1px solid rgba(255, 165, 0, 0.1);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-}
-.service-card:hover {
-  border-color: rgba(255, 165, 0, 0.2);
-  box-shadow: 0 8px 30px rgba(255, 165, 0, 0.15);
-  transform: translateY(-2px);
-}
-
-.service-icon-wrapper {
-  @apply p-3 rounded-lg transition-all duration-300;
-  background-color: rgba(30, 30, 30, 0.5);
-  border: 1px solid rgba(255, 165, 0, 0.1);
-}
-.service-card:hover .service-icon-wrapper {
-  @apply bg-opacity-70;
-  border-color: rgba(255, 165, 0, 0.2);
-  box-shadow: 0 0 15px rgba(255, 165, 0, 0.2);
-}
-
-.service-icon {
-  @apply text-primary transition-all duration-300;
-}
-.service-card:hover .service-icon {
-  transform: scale(1.1);
-}
-
-.service-feature {
-  @apply py-2 px-4 text-sm text-gray-light rounded-md transition-all duration-300;
-  background-color: rgba(30, 30, 30, 0.4);
-  border: 1px solid rgba(255, 165, 0, 0.05);
-}
-.service-feature:hover {
-  @apply bg-opacity-60;
-  border-color: rgba(255, 165, 0, 0.15);
-}
-
-/* Carousel */
-.carousel-container {
-  @apply overflow-x-hidden relative;
-}
-
-.carousel-track {
-  @apply flex transition-transform duration-500;
-}
-
-.carousel-item {
-  @apply flex-shrink-0 px-2;
-}
-
-/* Form Input */
-.form-input {
-  @apply w-full p-3 border rounded-md text-white transition-all duration-300;
-  background-color: #1A1A1A;
-  border-color: #4B5563;
-}
-.form-input:focus {
-  border-color: #FFA500;
-  outline: none;
-  box-shadow: 0 0 0 1px #FFA500;
-}
-
-/* Animations */
 @keyframes border-glow {
   0% {
     background-position: 0% 50%;
@@ -183,15 +88,71 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+.glow-effect {
+  filter: drop-shadow(0 0 8px rgba(255, 165, 0, 0.6));
+}
+
+.service-card {
+  @apply bg-dark-card bg-opacity-80 backdrop-blur-sm p-6 rounded-lg transition-all duration-300 cursor-pointer;
+  border: 1px solid rgba(255, 165, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.service-card:hover {
+  border-color: rgba(255, 165, 0, 0.2);
+  box-shadow: 0 8px 30px rgba(255, 165, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.service-icon-wrapper {
+  @apply p-3 rounded-lg bg-dark-lighter bg-opacity-50 transition-all duration-300;
+  border: 1px solid rgba(255, 165, 0, 0.1);
+}
+
+.service-card:hover .service-icon-wrapper {
+  @apply bg-opacity-70;
+  border-color: rgba(255, 165, 0, 0.2);
+  box-shadow: 0 0 15px rgba(255, 165, 0, 0.2);
+}
+
+.service-icon {
+  @apply text-primary transition-all duration-300;
+}
+
+.service-card:hover .service-icon {
+  transform: scale(1.1);
+}
+
+.service-feature {
+  @apply py-2 px-4 bg-dark-lighter bg-opacity-40 rounded-md text-sm text-gray-light transition-all duration-300;
+  border: 1px solid rgba(255, 165, 0, 0.05);
+}
+
+.service-feature:hover {
+  @apply bg-opacity-60;
+  border-color: rgba(255, 165, 0, 0.15);
+}
+
+.carousel-container {
+  @apply overflow-x-hidden relative;
+}
+
+.carousel-track {
+  @apply flex transition-transform duration-500;
+}
+
+.carousel-item {
+  @apply flex-shrink-0 px-2;
+}
+
+.form-input {
+  @apply w-full p-3 bg-[#1A1A1A] border border-gray-700 rounded-md text-white focus:border-[#FFA500] focus:outline-none focus:ring-1 focus:ring-[#FFA500] transition-all duration-300;
+}
+
+/* Animations */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .animate-fade-in {
