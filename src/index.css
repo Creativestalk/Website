@@ -163,8 +163,22 @@ h1, h2, h3, h4, h5, h6 {
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
 .animate-fade-in {
   animation: fadeIn 0.6s ease-out forwards;
+}
+
+.animate-fade-out {
+  animation: fadeOut 1.5s ease-out forwards;
+}
+
+.logo-reveal {
+  mix-blend-mode: screen;
+  filter: brightness(1.5);
 }
 
 .animate-delay-100 { animation-delay: 0.1s; }

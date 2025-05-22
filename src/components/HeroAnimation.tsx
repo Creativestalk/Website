@@ -8,6 +8,7 @@ interface HeroAnimationProps {
 
 const HeroAnimation: React.FC<HeroAnimationProps> = ({ onAnimationComplete }) => {
   const [currentStep, setCurrentStep] = useState(0);
+  const [startZoom, setStartZoom] = useState(false);
   
   const steps = [
     { icon: Camera, text: 'Shoot' },
@@ -19,20 +20,25 @@ const HeroAnimation: React.FC<HeroAnimationProps> = ({ onAnimationComplete }) =>
     const timer = setTimeout(() => {
       if (currentStep < steps.length) {
         setCurrentStep(currentStep + 1);
-      } else {
-        setTimeout(onAnimationComplete, 200);
+      } else if (currentStep === steps.length) {
+        setStartZoom(true);
+        setTimeout(onAnimationComplete, 1500); // Adjusted timing for zoom effect
       }
-    }, currentStep === 0 ? 1000 : 400); // Initial delay 1s, then 0.2s for each step
+    }, currentStep === 0 ? 1000 : 400);
 
     return () => clearTimeout(timer);
   }, [currentStep, onAnimationComplete]);
 
   return (
-    <div className="fixed inset-0 bg-black flex items-center justify-center z-50">
+    <div className={`fixed inset-0 bg-black flex items-center justify-center z-50 ${startZoom ? 'animate-fade-out' : ''}`}>
       <div className="relative">
-        {/* Logo Animation - stays visible throughout */}
-        <div className="transition-all duration-1000 opacity-100 scale-100">
-          <Logo className="h-24 w-24 text-primary" />
+        {/* Logo Animation */}
+        <div className={`transition-all duration-1000 ${
+          startZoom ? 'scale-[15] opacity-0' : 'scale-100 opacity-100'
+        }`}>
+          <Logo className={`h-24 w-24 text-primary transition-all duration-1500 ${
+            startZoom ? 'logo-reveal' : ''
+          }`} />
         </div>
 
         {/* Step Animations */}
