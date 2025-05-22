@@ -1,35 +1,39 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Navbar from './components/Navbar';
 import HeroSection from './sections/HeroSection';
 import ServicesSection from './sections/ServicesSection';
 import WorksSection from './sections/WorksSection';
 import ContactSection from './sections/ContactSection';
 import Footer from './components/Footer';
+import HeroAnimation from './components/HeroAnimation';
 
 function App() {
+  const [showAnimation, setShowAnimation] = useState(true);
+  const [showContent, setShowContent] = useState(false);
+
   useEffect(() => {
     document.title = "Creativestalk Studio | Visual Storytelling";
   }, []);
 
+  const handleAnimationComplete = () => {
+    setShowContent(true);
+    setTimeout(() => setShowAnimation(false), 500);
+  };
+
   return (
-    <div className="bg-dark text-white">
-      <Navbar />
-      <main>
-        <section id="home">
+    <>
+      {showAnimation && <HeroAnimation onAnimationComplete={handleAnimationComplete} />}
+      <div className={`bg-dark text-white transition-opacity duration-500 ${showContent ? 'opacity-100' : 'opacity-0'}`}>
+        <Navbar />
+        <main>
           <HeroSection />
-        </section>
-        <section id="services">
           <ServicesSection />
-        </section>
-        <section id="works">
           <WorksSection />
-        </section>
-        <section id="contact">
           <ContactSection />
-        </section>
-      </main>
-      <Footer />
-    </div>
+        </main>
+        <Footer />
+      </div>
+    </>
   );
 }
 
