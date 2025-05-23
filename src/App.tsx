@@ -16,14 +16,16 @@ function App() {
   }, []);
 
   const handleAnimationComplete = () => {
+    // Show content immediately as animation starts to fade
     setShowContent(true);
-    setTimeout(() => setShowAnimation(false), 500);
+    // Remove animation overlay after zoom completes
+    setTimeout(() => setShowAnimation(false), 1000);
   };
 
   return (
     <>
       {showAnimation && <HeroAnimation onAnimationComplete={handleAnimationComplete} />}
-      <div className={`bg-dark text-white transition-opacity duration-500 ${showContent ? 'opacity-100' : 'opacity-0'}`}>
+      <div className={`bg-dark text-white transition-opacity duration-300 ${showContent ? 'opacity-100' : 'opacity-0'}`}>
         <Navbar />
         <main>
           <HeroSection />

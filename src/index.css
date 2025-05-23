@@ -173,12 +173,14 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .animate-fade-out {
-  animation: fadeOut 1.5s ease-out forwards;
+  animation: fadeOut 0.6s ease-in-out forwards;
 }
 
 .logo-reveal {
   mix-blend-mode: screen;
-  filter: brightness(1.5);
+  filter: brightness(1.2) contrast(1.1);
+  transform-origin: center;
+  transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .animate-delay-100 { animation-delay: 0.1s; }
@@ -186,3 +188,20 @@ h1, h2, h3, h4, h5, h6 {
 .animate-delay-300 { animation-delay: 0.3s; }
 .animate-delay-400 { animation-delay: 0.4s; }
 .animate-delay-500 { animation-delay: 0.5s; }
+
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.duration-1500 {
+  transition-duration: 1500ms;
+}
+
+.blur-lg {
+  filter: blur(16px);
+}
+
+.blur-none {
+  filter: blur(0);
+}

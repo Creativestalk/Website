@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from 'react';
 import { ChevronDown } from 'lucide-react';
-import Logo from '../components/Logo';
 
 const HeroSection: React.FC = () => {
   const headlineRef = useRef<HTMLHeadingElement>(null);
@@ -20,13 +19,11 @@ const HeroSection: React.FC = () => {
     <section id="home" className="relative min-h-screen flex flex-col justify-center pt-20 pb-10">
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex flex-col items-center text-center mb-10">
-          <div className="flex items-center space-x-2 mb-4 animate-fade-in">
-            <Logo className="h-8 w-8 text-primary" />
-            <h2 className="text-xl font-medium">Creativestalk Studio</h2>
-          </div>
-          <p className="text-sm uppercase tracking-widest text-gray-medium mb-6 animate-fade-in animate-delay-100">
-            People Looks At You
-          </p>
+          <img 
+            src="https://raw.githubusercontent.com/Creativestalk/Website/main/774-160.png" 
+            alt="Creativestalk Studio"
+            className="h-8 mb-4 animate-fade-in"
+          />
           
           <h1 ref={headlineRef} className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold mb-8 leading-tight">
             Bringing <span className="highlight-orange">Your</span> ✦ Vision to <span className="highlight-yellow">Life</span>.
