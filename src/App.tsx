@@ -6,6 +6,7 @@ import WorksSection from './sections/WorksSection';
 import ContactSection from './sections/ContactSection';
 import Footer from './components/Footer';
 import HeroAnimation from './components/HeroAnimation';
+import CursorTrail from './components/CursorTrail';
 
 function App() {
   const [showAnimation, setShowAnimation] = useState(true);
@@ -16,14 +17,13 @@ function App() {
   }, []);
 
   const handleAnimationComplete = () => {
-    // Show content immediately as animation starts to fade
     setShowContent(true);
-    // Remove animation overlay after zoom completes
     setTimeout(() => setShowAnimation(false), 1000);
   };
 
   return (
     <>
+      <CursorTrail />
       {showAnimation && <HeroAnimation onAnimationComplete={handleAnimationComplete} />}
       <div className={`bg-dark text-white transition-opacity duration-300 ${showContent ? 'opacity-100' : 'opacity-0'}`}>
         <Navbar />
