@@ -47,10 +47,24 @@ const ContactSection: React.FC = () => {
                 </div>
                 
                 <div className="flex items-start space-x-3">
-                  <MapPin className="h-5 w-5 text-primary mt-1" />
+                  <a 
+                    href="https://g.co/kgs/41NAo1h"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-1"
+                  >
+                    <MapPin className="h-5 w-5 text-primary hover:text-primary/80 transition-colors duration-300" />
+                  </a>
                   <div>
                     <h4 className="text-gray-light font-medium">Address</h4>
-                    <p className="text-gray-medium">H No: 5-4-1233, Plot No: 182, Sharada Nagar, Vanasthalipuram</p>
+                    <a 
+                      href="https://g.co/kgs/41NAo1h"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-gray-medium hover:text-primary transition-colors duration-300"
+                    >
+                      H No: 5-4-1233, Plot No: 182, Sharada Nagar, Vanasthalipuram
+                    </a>
                   </div>
                 </div>
                 
