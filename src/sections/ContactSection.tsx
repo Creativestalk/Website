@@ -33,51 +33,55 @@ const ContactSection: React.FC = () => {
               </div>
               
               <div className="space-y-6">
-                <div className="flex items-start space-x-4 p-4 rounded-lg bg-dark/50 hover:bg-dark/70 transition-colors duration-300">
+                <a 
+                  href="tel:+919948880710"
+                  className="flex items-start space-x-4 p-4 rounded-lg bg-dark/50 hover:bg-dark/70 transition-colors duration-300"
+                >
                   <Phone className="h-5 w-5 text-primary mt-1" />
                   <div>
                     <h4 className="text-gray-light font-medium">Phone</h4>
                     <p className="text-gray-medium">+91 9948880710</p>
                   </div>
-                </div>
+                </a>
                 
-                <div className="flex items-start space-x-4 p-4 rounded-lg bg-dark/50 hover:bg-dark/70 transition-colors duration-300">
+                <a 
+                  href="mailto:creativestalkstudio@gmail.com"
+                  className="flex items-start space-x-4 p-4 rounded-lg bg-dark/50 hover:bg-dark/70 transition-colors duration-300"
+                >
                   <Mail className="h-5 w-5 text-primary mt-1" />
                   <div>
                     <h4 className="text-gray-light font-medium">Email</h4>
                     <p className="text-gray-medium">creativestalkstudio@gmail.com</p>
                   </div>
-                </div>
+                </a>
                 
-                <div className="flex items-start space-x-4 p-4 rounded-lg bg-dark/50 hover:bg-dark/70 transition-colors duration-300">
-                  <a 
-                    href="https://g.co/kgs/41NAo1h"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-1"
-                  >
-                    <MapPin className="h-5 w-5 text-primary hover:text-primary/80 transition-colors duration-300" />
-                  </a>
+                <a 
+                  href="https://g.co/kgs/41NAo1h"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-start space-x-4 p-4 rounded-lg bg-dark/50 hover:bg-dark/70 transition-colors duration-300"
+                >
+                  <MapPin className="h-5 w-5 text-primary mt-1" />
                   <div>
                     <h4 className="text-gray-light font-medium">Address</h4>
-                    <a 
-                      href="https://g.co/kgs/41NAo1h"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-gray-medium hover:text-primary transition-colors duration-300"
-                    >
+                    <p className="text-gray-medium hover:text-primary transition-colors duration-300">
                       H No: 5-4-1233, Plot No: 182, Sharada Nagar, Vanasthalipuram
-                    </a>
+                    </p>
                   </div>
-                </div>
+                </a>
                 
-                <div className="flex items-start space-x-4 p-4 rounded-lg bg-dark/50 hover:bg-dark/70 transition-colors duration-300">
+                <a 
+                  href="https://www.instagram.com/creativestalkstudio/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-start space-x-4 p-4 rounded-lg bg-dark/50 hover:bg-dark/70 transition-colors duration-300"
+                >
                   <Instagram className="h-5 w-5 text-primary mt-1" />
                   <div>
                     <h4 className="text-gray-light font-medium">Instagram</h4>
-                    <p className="text-gray-medium">@creativestalkdesigns</p>
+                    <p className="text-gray-medium">@creativestalkstudio</p>
                   </div>
-                </div>
+                </a>
               </div>
               
               <div className="pt-8 mt-8 border-t border-white/5">
