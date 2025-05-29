@@ -96,6 +96,22 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+@keyframes border-flow {
+  0% {
+    clip-path: inset(0 100% 0 0);
+  }
+  50% {
+    clip-path: inset(0 0 0 0);
+  }
+  100% {
+    clip-path: inset(0 0 0 100%);
+  }
+}
+
+.animate-border-flow {
+  animation: border-flow 2s linear infinite;
+}
+
 .glow-effect {
   filter: drop-shadow(0 0 8px rgba(255, 165, 0, 0.6));
 }

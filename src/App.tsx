@@ -7,6 +7,7 @@ import ContactSection from './sections/ContactSection';
 import Footer from './components/Footer';
 import HeroAnimation from './components/HeroAnimation';
 import CursorTrail from './components/CursorTrail';
+import Portfolio from './pages/Portfolio';
 
 function App() {
   const [showAnimation, setShowAnimation] = useState(true);
@@ -20,6 +21,12 @@ function App() {
     setShowContent(true);
     setTimeout(() => setShowAnimation(false), 1000);
   };
+
+  const isPortfolioPage = window.location.pathname === '/portfolio';
+
+  if (isPortfolioPage) {
+    return <Portfolio />;
+  }
 
   return (
     <>

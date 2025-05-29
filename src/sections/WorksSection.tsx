@@ -26,9 +26,18 @@ const WorksSection: React.FC = () => {
           <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4 animate-fade-in">
             Recent Works, Notable Impact
           </h2>
-          <p className="text-gray-medium max-w-2xl mx-auto animate-fade-in animate-delay-100">
+          <p className="text-gray-medium max-w-2xl mx-auto animate-fade-in animate-delay-100 mb-8">
             Explore our portfolio of successful projects
           </p>
+          <a 
+            href="/portfolio"
+            className="inline-block btn-primary px-8 py-3 relative overflow-hidden group"
+          >
+            <span className="relative z-10">View Full Portfolio</span>
+            <div className="absolute inset-0 bg-gradient-to-r from-primary to-yellow-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div className="absolute inset-0 border-2 border-primary rounded-md"></div>
+            <div className="absolute inset-[-2px] bg-gradient-to-r from-primary to-yellow-500 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-border-flow"></div>
+          </a>
         </div>
         
         <div className="carousel-container">
