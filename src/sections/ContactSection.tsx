@@ -5,8 +5,11 @@ import ContactForm from '../components/ContactForm';
 const ContactSection: React.FC = () => {
   return (
     <section id="contact" className="py-20 bg-dark">
-      <div className="container mx-auto px-4 md:px-6">
+      <div className="container mx-auto px-4 md:px-6 max-w-6xl">
         <div className="text-center mb-16">
+          <span className="inline-block bg-primary/10 text-primary font-medium py-2 px-4 rounded-full mb-4 animate-fade-in">
+            Contact Us
+          </span>
           <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4 animate-fade-in">
             Let's Talk
           </h2>
@@ -15,7 +18,7 @@ const ContactSection: React.FC = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 bg-dark-card rounded-2xl p-8 shadow-xl border border-white/5">
           <div className="lg:order-2 animate-fade-in animate-delay-200">
             <ContactForm />
           </div>
@@ -29,8 +32,8 @@ const ContactSection: React.FC = () => {
                 </p>
               </div>
               
-              <div className="space-y-4">
-                <div className="flex items-start space-x-3">
+              <div className="space-y-6">
+                <div className="flex items-start space-x-4 p-4 rounded-lg bg-dark/50 hover:bg-dark/70 transition-colors duration-300">
                   <Phone className="h-5 w-5 text-primary mt-1" />
                   <div>
                     <h4 className="text-gray-light font-medium">Phone</h4>
@@ -38,7 +41,7 @@ const ContactSection: React.FC = () => {
                   </div>
                 </div>
                 
-                <div className="flex items-start space-x-3">
+                <div className="flex items-start space-x-4 p-4 rounded-lg bg-dark/50 hover:bg-dark/70 transition-colors duration-300">
                   <Mail className="h-5 w-5 text-primary mt-1" />
                   <div>
                     <h4 className="text-gray-light font-medium">Email</h4>
@@ -46,7 +49,7 @@ const ContactSection: React.FC = () => {
                   </div>
                 </div>
                 
-                <div className="flex items-start space-x-3">
+                <div className="flex items-start space-x-4 p-4 rounded-lg bg-dark/50 hover:bg-dark/70 transition-colors duration-300">
                   <a 
                     href="https://g.co/kgs/41NAo1h"
                     target="_blank"
@@ -68,7 +71,7 @@ const ContactSection: React.FC = () => {
                   </div>
                 </div>
                 
-                <div className="flex items-start space-x-3">
+                <div className="flex items-start space-x-4 p-4 rounded-lg bg-dark/50 hover:bg-dark/70 transition-colors duration-300">
                   <Instagram className="h-5 w-5 text-primary mt-1" />
                   <div>
                     <h4 className="text-gray-light font-medium">Instagram</h4>
@@ -77,15 +80,21 @@ const ContactSection: React.FC = () => {
                 </div>
               </div>
               
-              <div className="pt-8">
-                <h3 className="text-xl font-medium mb-4">Working Hours</h3>
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="text-gray-light">Monday - Friday:</div>
-                  <div className="text-gray-medium">9:00 AM - 6:00 PM</div>
-                  <div className="text-gray-light">Saturday:</div>
-                  <div className="text-gray-medium">10:00 AM - 4:00 PM</div>
-                  <div className="text-gray-light">Sunday:</div>
-                  <div className="text-gray-medium">Closed</div>
+              <div className="pt-8 mt-8 border-t border-white/5">
+                <h3 className="text-xl font-medium mb-6">Working Hours</h3>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center p-3 rounded-lg bg-dark/50">
+                    <span className="text-gray-light">Monday - Friday:</span>
+                    <span className="text-gray-medium">9:00 AM - 6:00 PM</span>
+                  </div>
+                  <div className="flex justify-between items-center p-3 rounded-lg bg-dark/50">
+                    <span className="text-gray-light">Saturday:</span>
+                    <span className="text-gray-medium">10:00 AM - 4:00 PM</span>
+                  </div>
+                  <div className="flex justify-between items-center p-3 rounded-lg bg-dark/50">
+                    <span className="text-gray-light">Sunday:</span>
+                    <span className="text-gray-medium">Closed</span>
+                  </div>
                 </div>
               </div>
             </div>

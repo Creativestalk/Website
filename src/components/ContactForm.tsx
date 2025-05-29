@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Send } from 'lucide-react';
+import emailjs from '@emailjs/browser';
 
 const ContactForm: React.FC = () => {
+  const form = useRef<HTMLFormElement>(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -11,6 +13,7 @@ const ContactForm: React.FC = () => {
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -20,28 +23,38 @@ const ContactForm: React.FC = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setError('');
     
-    // Simulate form submission
-    setTimeout(() => {
+    try {
+      if (form.current) {
+        await emailjs.sendForm(
+          'service_rurl5zk', // Replace with your EmailJS service ID
+          'template_ohgyuti', // Replace with your EmailJS template ID
+          form.current,
+          'vmI0A90wXmGV8zowX' // Replace with your EmailJS public key
+        );
+        
+        setSubmitted(true);
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          message: ''
+        });
+        
+        // Reset success message after 5 seconds
+        setTimeout(() => {
+          setSubmitted(false);
+        }, 5000);
+      }
+    } catch (err) {
+      setError('Failed to send message. Please try again later.');
+    } finally {
       setIsSubmitting(false);
-      setSubmitted(true);
-      
-      // Reset form after submission
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        message: ''
-      });
-      
-      // Reset success message after 3 seconds
-      setTimeout(() => {
-        setSubmitted(false);
-      }, 3000);
-    }, 1500);
+    }
   };
 
   return (
@@ -53,7 +66,7 @@ const ContactForm: React.FC = () => {
           <p className="text-gray-medium">We'll get back to you soon.</p>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form ref={form} onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-gray-light mb-1">Name</label>
             <input
@@ -108,6 +121,10 @@ const ContactForm: React.FC = () => {
               placeholder="Tell us about your project..."
             ></textarea>
           </div>
+          
+          {error && (
+            <div className="text-red-500 text-sm">{error}</div>
+          )}
           
           <button
             type="submit"
