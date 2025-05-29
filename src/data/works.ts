@@ -40,5 +40,34 @@ export const workItems: WorkItem[] = [
     thumbnail: 'https://img.youtube.com/vi/ZxeXpIIy7HY/hqdefault.jpg',
     youtubeUrl: 'https://www.youtube.com/watch?v=ZxeXpIIy7HY',
     category: 'reels'
+  },
+  {
+    id: 'Loca Loka',
+    title: 'Loca Loka-Podcast',
+    thumbnail: 'https://img.youtube.com/vi/MwknMapP5CA/maxresdefault.jpg',
+    youtubeUrl: 'https://youtu.be/MwknMapP5CA?si=CetUtpBpdjg9NSl9',
+    category: 'podcasts'
+  },
+  {
+    id: 'promos',
+    title: 'Promo',
+    thumbnail: 'https://img.youtube.com/vi/grza_OojSSU/maxresdefault.jpg',
+    youtubeUrl: 'https://youtu.be/grza_OojSSU?si=w5FqJrLzPFArydXU',
+    category: 'promos'
+  },
+  {
+    id: 'shorts1',
+    title: 'Short Video 1',
+    thumbnail: 'https://img.youtube.com/vi/aWLi0Hs7_VE/maxresdefault.jpg',
+    youtubeUrl: 'https://www.youtube.com/shorts/aWLi0Hs7_VE',
+    category: 'reels'
+  },
+  {
+    id: 'promos2',
+    title: 'Modhatisarike Motion Poster',
+    thumbnail: 'https://img.youtube.com/vi/lQlORKb3t2Q/maxresdefault.jpg',
+    youtubeUrl: 'https://youtu.be/lQlORKb3t2Q?si=D5tk_Mg7eZoyJx3F',
+    category: 'promos'
   }
+  
 ];

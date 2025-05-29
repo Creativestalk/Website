@@ -10,6 +10,11 @@ const categories: { id: Category; label: string }[] = [
   { id: 'reels', label: 'Reel Edits' },
   { id: 'videos', label: 'Video Edits' },
   { id: 'animation', label: 'Animation' },
+  { id: 'podcasts', label: 'Podcasts' },
+  { id: 'promos', label: 'Promo Cuts' },
+  { id: 'motiongraphics', label: 'Motion Graphics' },
+  
+  
 ];
 
 const Portfolio: React.FC = () => {
