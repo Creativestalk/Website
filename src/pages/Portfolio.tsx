@@ -15,7 +15,7 @@ const categories: { id: Category; label: string }[] = [
 const Portfolio: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<Category>('all');
 
-  const filteredWorks = workItems.filter(work => 
+  const filteredWorks = workItems.filter(work =>
     activeCategory === 'all' ? true : work.category === activeCategory
   );
 
@@ -24,7 +24,7 @@ const Portfolio: React.FC = () => {
       <div className="container mx-auto px-4 py-20">
         {/* Header */}
         <div className="mb-12">
-          <a 
+          <a
             href="/"
             className="inline-flex items-center text-gray-medium hover:text-primary transition-colors duration-300 mb-8 group"
           >
@@ -55,9 +55,9 @@ const Portfolio: React.FC = () => {
         </div>
 
         {/* Portfolio Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-full">
           {filteredWorks.map((work, index) => (
-            <div key={work.id} className="aspect-video">
+            <div key={work.id} className="aspect-video max-w-xs mx-auto">
               <WorkCard work={work} index={index} />
             </div>
           ))}
@@ -67,4 +67,4 @@ const Portfolio: React.FC = () => {
   );
 };
 
-export default Portfolio
+export default Portfolio;
