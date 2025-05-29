@@ -55,9 +55,11 @@ const Portfolio: React.FC = () => {
         </div>
 
         {/* Portfolio Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {filteredWorks.map((work, index) => (
-            <WorkCard key={work.id} work={work} index={index} />
+            <div key={work.id} className="aspect-video">
+              <WorkCard work={work} index={index} />
+            </div>
           ))}
         </div>
       </div>
@@ -65,4 +67,4 @@ const Portfolio: React.FC = () => {
   );
 };
 
-export default Portfolio;
+export default Portfolio

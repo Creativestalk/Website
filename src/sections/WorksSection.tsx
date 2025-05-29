@@ -44,14 +44,14 @@ const WorksSection: React.FC = () => {
           <div 
             ref={trackRef}
             className="carousel-track"
-            style={{ transform: `translateX(-${currentIndex * (100 / (window.innerWidth >= 1024 ? 3 : window.innerWidth >= 640 ? 2 : 1))}%)` }}
+            style={{ transform: `translateX(-${currentIndex * (100 / 3)}%)` }}
           >
             {workItems.map((work, index) => (
-              <WorkCard 
-                key={work.id} 
-                work={work} 
-                index={index} 
-              />
+              <div key={work.id} className="carousel-item w-full sm:w-1/2 lg:w-1/3 px-2">
+                <div className="h-64">
+                  <WorkCard work={work} index={index} />
+                </div>
+              </div>
             ))}
           </div>
           
@@ -65,8 +65,8 @@ const WorksSection: React.FC = () => {
             </button>
             <button 
               onClick={slideNext}
-              disabled={currentIndex >= workItems.length - (window.innerWidth >= 1024 ? 3 : window.innerWidth >= 640 ? 2 : 1)}
-              className={`p-2 rounded-full ${currentIndex >= workItems.length - (window.innerWidth >= 1024 ? 3 : window.innerWidth >= 640 ? 2 : 1) ? 'text-gray-dark bg-dark-card' : 'text-white bg-dark-card hover:bg-primary transition-colors duration-300'}`}
+              disabled={currentIndex >= workItems.length - 3}
+              className={`p-2 rounded-full ${currentIndex >= workItems.length - 3 ? 'text-gray-dark bg-dark-card' : 'text-white bg-dark-card hover:bg-primary transition-colors duration-300'}`}
             >
               <ChevronRight className="h-6 w-6" />
             </button>
