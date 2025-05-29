@@ -35,23 +35,23 @@ const ContactSection: React.FC = () => {
               <div className="space-y-6">
                 <a 
                   href="tel:+919948880710"
-                  className="flex items-start space-x-4 p-4 rounded-lg bg-dark/50 hover:bg-dark/70 transition-colors duration-300"
+                  className="contact-link group"
                 >
-                  <Phone className="h-5 w-5 text-primary mt-1" />
+                  <Phone className="contact-icon" />
                   <div>
-                    <h4 className="text-gray-light font-medium">Phone</h4>
-                    <p className="text-gray-medium">+91 9948880710</p>
+                    <h4 className="text-gray-light font-medium group-hover:text-primary transition-colors duration-300">Phone</h4>
+                    <p className="text-gray-medium group-hover:text-white transition-colors duration-300">+91 9948880710</p>
                   </div>
                 </a>
                 
                 <a 
                   href="mailto:creativestalkstudio@gmail.com"
-                  className="flex items-start space-x-4 p-4 rounded-lg bg-dark/50 hover:bg-dark/70 transition-colors duration-300"
+                  className="contact-link group"
                 >
-                  <Mail className="h-5 w-5 text-primary mt-1" />
+                  <Mail className="contact-icon" />
                   <div>
-                    <h4 className="text-gray-light font-medium">Email</h4>
-                    <p className="text-gray-medium">creativestalkstudio@gmail.com</p>
+                    <h4 className="text-gray-light font-medium group-hover:text-primary transition-colors duration-300">Email</h4>
+                    <p className="text-gray-medium group-hover:text-white transition-colors duration-300">creativestalkstudio@gmail.com</p>
                   </div>
                 </a>
                 
@@ -59,12 +59,12 @@ const ContactSection: React.FC = () => {
                   href="https://g.co/kgs/41NAo1h"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-start space-x-4 p-4 rounded-lg bg-dark/50 hover:bg-dark/70 transition-colors duration-300"
+                  className="contact-link group"
                 >
-                  <MapPin className="h-5 w-5 text-primary mt-1" />
+                  <MapPin className="contact-icon" />
                   <div>
-                    <h4 className="text-gray-light font-medium">Address</h4>
-                    <p className="text-gray-medium hover:text-primary transition-colors duration-300">
+                    <h4 className="text-gray-light font-medium group-hover:text-primary transition-colors duration-300">Address</h4>
+                    <p className="text-gray-medium group-hover:text-white transition-colors duration-300">
                       H No: 5-4-1233, Plot No: 182, Sharada Nagar, Vanasthalipuram
                     </p>
                   </div>
@@ -74,12 +74,12 @@ const ContactSection: React.FC = () => {
                   href="https://www.instagram.com/creativestalkstudio/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-start space-x-4 p-4 rounded-lg bg-dark/50 hover:bg-dark/70 transition-colors duration-300"
+                  className="contact-link group"
                 >
-                  <Instagram className="h-5 w-5 text-primary mt-1" />
+                  <Instagram className="contact-icon" />
                   <div>
-                    <h4 className="text-gray-light font-medium">Instagram</h4>
-                    <p className="text-gray-medium">@creativestalkstudio</p>
+                    <h4 className="text-gray-light font-medium group-hover:text-primary transition-colors duration-300">Instagram</h4>
+                    <p className="text-gray-medium group-hover:text-white transition-colors duration-300">@creativestalkstudio</p>
                   </div>
                 </a>
               </div>
@@ -87,15 +87,15 @@ const ContactSection: React.FC = () => {
               <div className="pt-8 mt-8 border-t border-white/5">
                 <h3 className="text-xl font-medium mb-6">Working Hours</h3>
                 <div className="space-y-3">
-                  <div className="flex justify-between items-center p-3 rounded-lg bg-dark/50">
+                  <div className="working-hours-item">
                     <span className="text-gray-light">Monday - Friday:</span>
                     <span className="text-gray-medium">9:00 AM - 6:00 PM</span>
                   </div>
-                  <div className="flex justify-between items-center p-3 rounded-lg bg-dark/50">
+                  <div className="working-hours-item">
                     <span className="text-gray-light">Saturday:</span>
                     <span className="text-gray-medium">10:00 AM - 4:00 PM</span>
                   </div>
-                  <div className="flex justify-between items-center p-3 rounded-lg bg-dark/50">
+                  <div className="working-hours-item">
                     <span className="text-gray-light">Sunday:</span>
                     <span className="text-gray-medium">Closed</span>
                   </div>

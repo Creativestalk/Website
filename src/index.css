@@ -205,3 +205,99 @@ h1, h2, h3, h4, h5, h6 {
 .blur-none {
   filter: blur(0);
 }
+
+/* Enhanced interactive animations */
+.contact-link {
+  @apply relative flex items-start space-x-4 p-4 rounded-lg transition-all duration-300;
+  background: linear-gradient(to right, rgba(10, 10, 10, 0.5), rgba(26, 26, 26, 0.5));
+}
+
+.contact-link::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 0.5rem;
+  padding: 1px;
+  background: linear-gradient(to right, #FFA500, #FFD700);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.contact-link:hover::before {
+  opacity: 1;
+}
+
+.contact-link:hover {
+  transform: translateY(-2px);
+}
+
+.contact-icon {
+  @apply relative h-5 w-5 text-primary;
+  animation: iconPulse 2s infinite;
+}
+
+.contact-icon::before {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 165, 0, 0.3) 0%, transparent 70%);
+  animation: ripple 2s infinite;
+}
+
+.contact-icon::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 165, 0, 0.3);
+  animation: borderPulse 2s infinite;
+}
+
+@keyframes iconPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1.2);
+    opacity: 0;
+  }
+}
+
+@keyframes borderPulse {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(0.9);
+    opacity: 0.3;
+  }
+}
+
+.working-hours-item {
+  @apply flex justify-between items-center p-3 rounded-lg transition-all duration-300;
+  background: linear-gradient(to right, rgba(10, 10, 10, 0.5), rgba(26, 26, 26, 0.5));
+}
+
+.working-hours-item:hover {
+  background: linear-gradient(to right, rgba(26, 26, 26, 0.5), rgba(38, 38, 38, 0.5));
+  transform: translateX(4px);
+}
