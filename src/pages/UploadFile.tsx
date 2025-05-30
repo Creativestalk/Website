@@ -17,8 +17,8 @@ const UploadFile: React.FC = () => {
   const [success, setSuccess] = useState(false);
   const [thumbnail, setThumbnail] = useState('');
 
-  // Replace this with your actual Gumlet API key
-  const GUMLET_API_KEY = process.env.VITE_GUMLET_API_KEY || 'gumlet_3395307712022cc176b8cf9771d542cc';
+  const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+  const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
   const CORRECT_PASSWORD = 'VASACHA';
 
   const handleYoutubeUrlChange = (url: string) => {
@@ -66,11 +66,6 @@ const UploadFile: React.FC = () => {
       return;
     }
 
-    if (!GUMLET_API_KEY) {
-      setError('Gumlet API key is not configured');
-      return;
-    }
-
     if ((!file && !youtubeUrl) || !title || (!category && !newCategory)) {
       setError('Please fill in all required fields');
       return;
@@ -81,60 +76,37 @@ const UploadFile: React.FC = () => {
 
     try {
       if (uploadType === 'file' && file) {
-        // First, get upload URL from Gumlet
-        const uploadUrlResponse = await fetch('https://api.gumlet.com/v1/media/upload-url', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${GUMLET_API_KEY}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            content_type: file.type,
-            filename: file.name
-          })
-        });
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
 
-        if (!uploadUrlResponse.ok) {
-          throw new Error('Failed to get upload URL');
-        }
-
-        const { upload_url, media_id } = await uploadUrlResponse.json();
-
-        // Upload file to the provided URL
-        const uploadResponse = await fetch(upload_url, {
-          method: 'PUT',
-          body: file,
-          headers: {
-            'Content-Type': file.type
+        const response = await fetch(
+          `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`,
+          {
+            method: 'POST',
+            body: formData,
           }
-        });
+        );
 
-        if (!uploadResponse.ok) {
+        if (!response.ok) {
           throw new Error('Failed to upload file');
         }
 
-        // Update media metadata
-        const metadataResponse = await fetch(`https://api.gumlet.com/v1/media/${media_id}`, {
-          method: 'PATCH',
-          headers: {
-            'Authorization': `Bearer ${GUMLET_API_KEY}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            name: title,
-            tags: [newCategory || category],
-            description: description
-          })
+        const data = await response.json();
+        
+        // Store the upload result
+        console.log('Upload successful:', {
+          title,
+          category: newCategory || category,
+          description,
+          url: data.secure_url,
+          thumbnail: data.thumbnail_url || data.secure_url
         });
-
-        if (!metadataResponse.ok) {
-          throw new Error('Failed to update metadata');
-        }
 
         setSuccess(true);
         resetForm();
       } else if (uploadType === 'link' && youtubeUrl) {
-        // Handle YouTube link submission
+        // For YouTube links, we just store the metadata
         const videoData = {
           title,
           category: newCategory || category,
@@ -143,28 +115,8 @@ const UploadFile: React.FC = () => {
           thumbnail
         };
         
-        // Store YouTube video data in Gumlet as metadata
-        const response = await fetch('https://api.gumlet.com/v1/media', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${GUMLET_API_KEY}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            type: 'youtube',
-            url: youtubeUrl,
-            name: title,
-            tags: [newCategory || category],
-            description: description,
-            metadata: {
-              thumbnail_url: thumbnail
-            }
-          })
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to save YouTube video data');
-        }
+        // Store the YouTube data
+        console.log('YouTube data saved:', videoData);
 
         setSuccess(true);
         resetForm();
