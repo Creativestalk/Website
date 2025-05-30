@@ -3,8 +3,17 @@ import { ArrowLeft } from 'lucide-react';
 import { workItems } from '../data/works';
 import WorkCard from '../components/WorkCard';
 
-type Category = 'all' | 'reels' | 'videos' | 'animation';
+// ✅ Updated Category type to include all used categories
+type Category =
+  | 'all'
+  | 'reels'
+  | 'videos'
+  | 'animation'
+  | 'podcasts'
+  | 'promos'
+  | 'motiongraphics';
 
+// ✅ All categories now match the type definition
 export const categories: { id: Category; label: string }[] = [
   { id: 'all', label: 'All Works' },
   { id: 'reels', label: 'Reel Edits' },
