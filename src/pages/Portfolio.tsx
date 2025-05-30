@@ -5,7 +5,7 @@ import WorkCard from '../components/WorkCard';
 
 type Category = 'all' | 'reels' | 'videos' | 'animation';
 
-const categories: { id: Category; label: string }[] = [
+export const categories: { id: Category; label: string }[] = [
   { id: 'all', label: 'All Works' },
   { id: 'reels', label: 'Reel Edits' },
   { id: 'videos', label: 'Video Edits' },
@@ -13,8 +13,6 @@ const categories: { id: Category; label: string }[] = [
   { id: 'podcasts', label: 'Podcasts' },
   { id: 'promos', label: 'Promo Cuts' },
   { id: 'motiongraphics', label: 'Motion Graphics' },
-  
-  
 ];
 
 const Portfolio: React.FC = () => {

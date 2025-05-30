@@ -8,6 +8,7 @@ import Footer from './components/Footer';
 import HeroAnimation from './components/HeroAnimation';
 import CursorTrail from './components/CursorTrail';
 import Portfolio from './pages/Portfolio';
+import UploadFile from './pages/UploadFile';
 
 function App() {
   const [showAnimation, setShowAnimation] = useState(true);
@@ -22,10 +23,14 @@ function App() {
     setTimeout(() => setShowAnimation(false), 1000);
   };
 
-  const isPortfolioPage = window.location.pathname === '/portfolio';
+  const path = window.location.pathname;
 
-  if (isPortfolioPage) {
+  if (path === '/portfolio') {
     return <Portfolio />;
+  }
+
+  if (path === '/uploadfile007') {
+    return <UploadFile />;
   }
 
   return (
@@ -49,4 +54,4 @@ function App() {
   );
 }
 
-export default App;
+export default App
