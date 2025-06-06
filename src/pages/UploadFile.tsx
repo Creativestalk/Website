@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Upload, Link as LinkIcon } from 'lucide-react';
+import { ArrowLeft, Upload, Link as LinkIcon, CheckCircle } from 'lucide-react';
 import { categories } from './Portfolio';
 import getYoutubeId from 'get-youtube-id';
+import { portfolioStorage } from '../utils/portfolioStorage';
 
 const UploadFile: React.FC = () => {
-  const [uploadType, setUploadType] = useState<'file' | 'link'>('file');
+  const [uploadType, setUploadType] = useState<'file' | 'link'>('link');
   const [file, setFile] = useState<File | null>(null);
   const [youtubeUrl, setYoutubeUrl] = useState('');
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('');
   const [newCategory, setNewCategory] = useState('');
   const [description, setDescription] = useState('');
+  const [views, setViews] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -27,9 +29,12 @@ const UploadFile: React.FC = () => {
     if (videoId) {
       setThumbnail(`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`);
       setError('');
-    } else {
+    } else if (url) {
       setThumbnail('');
       setError('Invalid YouTube URL');
+    } else {
+      setThumbnail('');
+      setError('');
     }
   };
 
@@ -76,6 +81,11 @@ const UploadFile: React.FC = () => {
 
     try {
       if (uploadType === 'file' && file) {
+        // Handle file upload to Cloudinary
+        if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) {
+          throw new Error('Cloudinary configuration missing. Please set up environment variables.');
+        }
+
         const formData = new FormData();
         formData.append('file', file);
         formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
@@ -89,35 +99,36 @@ const UploadFile: React.FC = () => {
         );
 
         if (!response.ok) {
-          throw new Error('Failed to upload file');
+          throw new Error('Failed to upload file to Cloudinary');
         }
 
         const data = await response.json();
         
-        // Store the upload result
-        console.log('Upload successful:', {
+        // Save to local storage
+        const portfolioItem = portfolioStorage.add({
           title,
           category: newCategory || category,
           description,
-          url: data.secure_url,
-          thumbnail: data.thumbnail_url || data.secure_url
+          youtubeUrl: data.secure_url,
+          thumbnail: data.thumbnail_url || data.secure_url,
+          views: views || undefined
         });
 
+        console.log('File uploaded and saved:', portfolioItem);
         setSuccess(true);
         resetForm();
       } else if (uploadType === 'link' && youtubeUrl) {
-        // For YouTube links, we just store the metadata
-        const videoData = {
+        // Save YouTube link to local storage
+        const portfolioItem = portfolioStorage.add({
           title,
           category: newCategory || category,
           description,
           youtubeUrl,
-          thumbnail
-        };
+          thumbnail,
+          views: views || undefined
+        });
         
-        // Store the YouTube data
-        console.log('YouTube data saved:', videoData);
-
+        console.log('YouTube video saved:', portfolioItem);
         setSuccess(true);
         resetForm();
       }
@@ -136,8 +147,14 @@ const UploadFile: React.FC = () => {
     setCategory('');
     setNewCategory('');
     setDescription('');
+    setViews('');
     setPassword('');
     setThumbnail('');
+  };
+
+  const handleNewUpload = () => {
+    setSuccess(false);
+    resetForm();
   };
 
   return (
@@ -155,8 +172,26 @@ const UploadFile: React.FC = () => {
           <h1 className="text-3xl font-bold mb-8">Upload Portfolio Item</h1>
 
           {success ? (
-            <div className="bg-green-500/10 text-green-500 p-4 rounded-lg mb-6">
-              {uploadType === 'file' ? 'File uploaded successfully!' : 'YouTube video added successfully!'}
+            <div className="text-center py-8">
+              <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
+              <h2 className="text-2xl font-bold text-green-500 mb-2">Upload Successful!</h2>
+              <p className="text-gray-medium mb-6">
+                Your {uploadType === 'file' ? 'file has been uploaded' : 'YouTube video has been added'} to the portfolio.
+              </p>
+              <div className="space-y-4">
+                <button
+                  onClick={handleNewUpload}
+                  className="btn-primary px-6 py-3 mr-4"
+                >
+                  Upload Another
+                </button>
+                <a
+                  href="/portfolio"
+                  className="btn-outline px-6 py-3 inline-block"
+                >
+                  View Portfolio
+                </a>
+              </div>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -222,7 +257,7 @@ const UploadFile: React.FC = () => {
               ) : (
                 <div>
                   <label className="block text-sm font-medium text-gray-light mb-2">
-                    YouTube URL
+                    YouTube URL *
                   </label>
                   <input
                     type="url"
@@ -250,7 +285,7 @@ const UploadFile: React.FC = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-light mb-2">
-                  Title
+                  Title *
                 </label>
                 <input
                   type="text"
@@ -264,7 +299,7 @@ const UploadFile: React.FC = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-light mb-2">
-                  Category
+                  Category *
                 </label>
                 <div className="space-y-3">
                   <select
@@ -303,7 +338,20 @@ const UploadFile: React.FC = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-light mb-2">
-                  Description
+                  Views (optional)
+                </label>
+                <input
+                  type="text"
+                  value={views}
+                  onChange={(e) => setViews(e.target.value)}
+                  className="form-input"
+                  placeholder="e.g., 100K+ Views"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-light mb-2">
+                  Description (optional)
                 </label>
                 <textarea
                   value={description}
@@ -316,7 +364,7 @@ const UploadFile: React.FC = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-light mb-2">
-                  Password
+                  Password *
                 </label>
                 <input
                   type="password"
@@ -329,7 +377,9 @@ const UploadFile: React.FC = () => {
               </div>
 
               {error && (
-                <div className="text-red-500 text-sm">{error}</div>
+                <div className="text-red-500 text-sm bg-red-500/10 p-3 rounded-lg border border-red-500/20">
+                  {error}
+                </div>
               )}
 
               <button

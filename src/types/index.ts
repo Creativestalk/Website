@@ -11,7 +11,7 @@ export interface WorkItem {
   views?: string;
   thumbnail: string;
   youtubeUrl: string;
-  category: 'reels' | 'videos' | 'animation';
+  category: 'reels' | 'videos' | 'animation' | 'podcasts' | 'promos' | 'motiongraphics';
 }
 
 export interface NavItem {

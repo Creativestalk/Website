@@ -1,8 +1,9 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import WorkCard from '../components/WorkCard';
-import { workItems } from '../data/works';
+import { getWorkItems } from '../data/works';
+import { WorkItem } from '../types';
 
 interface WorksSectionProps {
   onNavigateToPortfolio: () => void;
@@ -10,7 +11,31 @@ interface WorksSectionProps {
 
 const WorksSection: React.FC<WorksSectionProps> = ({ onNavigateToPortfolio }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [workItems, setWorkItems] = useState<WorkItem[]>([]);
   const trackRef = useRef<HTMLDivElement>(null);
+  
+  // Load work items on component mount
+  useEffect(() => {
+    const loadWorkItems = () => {
+      const items = getWorkItems();
+      setWorkItems(items);
+    };
+
+    loadWorkItems();
+
+    // Listen for portfolio updates
+    const handlePortfolioUpdate = () => {
+      loadWorkItems();
+    };
+
+    window.addEventListener('portfolioUpdated', handlePortfolioUpdate);
+    window.addEventListener('storage', handlePortfolioUpdate);
+
+    return () => {
+      window.removeEventListener('portfolioUpdated', handlePortfolioUpdate);
+      window.removeEventListener('storage', handlePortfolioUpdate);
+    };
+  }, []);
   
   const slideNext = () => {
     if (currentIndex < workItems.length - 1) {
@@ -43,13 +68,23 @@ const WorksSection: React.FC<WorksSectionProps> = ({ onNavigateToPortfolio }) =>
           </motion.h2>
           
           <motion.p 
-            className="text-gray-medium max-w-2xl mx-auto mb-8"
+            className="text-gray-medium max-w-2xl mx-auto mb-2"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.1 }}
           >
             Explore our portfolio of successful projects
+          </motion.p>
+
+          <motion.p 
+            className="text-sm text-gray-light mb-8"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.15 }}
+          >
+            {workItems.length} total works
           </motion.p>
           
           <motion.button

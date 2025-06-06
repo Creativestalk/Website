@@ -1,6 +1,8 @@
 import { WorkItem } from '../types';
+import { portfolioStorage } from '../utils/portfolioStorage';
 
-export const workItems: WorkItem[] = [
+// Default/demo work items
+const defaultWorkItems: WorkItem[] = [
   {
     id: 'teliyadhe',
     title: 'Teliyadhe',
@@ -69,5 +71,25 @@ export const workItems: WorkItem[] = [
     youtubeUrl: 'https://youtu.be/lQlORKb3t2Q?si=D5tk_Mg7eZoyJx3F',
     category: 'promos'
   }
-  
 ];
+
+// Get all work items (default + uploaded)
+export const getWorkItems = (): WorkItem[] => {
+  const uploadedItems = portfolioStorage.getAll();
+  
+  // Convert uploaded items to WorkItem format
+  const convertedItems: WorkItem[] = uploadedItems.map(item => ({
+    id: item.id,
+    title: item.title,
+    views: item.views,
+    thumbnail: item.thumbnail,
+    youtubeUrl: item.youtubeUrl || '#',
+    category: item.category as WorkItem['category']
+  }));
+
+  // Combine uploaded items with default items
+  return [...convertedItems, ...defaultWorkItems];
+};
+
+// For backward compatibility
+export const workItems = getWorkItems();

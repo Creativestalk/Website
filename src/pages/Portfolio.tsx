@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { workItems } from '../data/works';
+import { getWorkItems } from '../data/works';
 import WorkCard from '../components/WorkCard';
+import { WorkItem } from '../types';
 
 // ✅ Updated Category type to include all used categories
 type Category =
@@ -31,6 +32,32 @@ interface PortfolioProps {
 
 const Portfolio: React.FC<PortfolioProps> = ({ onNavigateHome }) => {
   const [activeCategory, setActiveCategory] = useState<Category>('all');
+  const [workItems, setWorkItems] = useState<WorkItem[]>([]);
+
+  // Load work items on component mount and when returning to portfolio
+  useEffect(() => {
+    const loadWorkItems = () => {
+      const items = getWorkItems();
+      setWorkItems(items);
+    };
+
+    loadWorkItems();
+
+    // Listen for storage changes to update portfolio in real-time
+    const handleStorageChange = () => {
+      loadWorkItems();
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Also listen for custom events when items are added
+    window.addEventListener('portfolioUpdated', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('portfolioUpdated', handleStorageChange);
+    };
+  }, []);
 
   const filteredWorks = workItems.filter(work =>
     activeCategory === 'all' ? true : work.category === activeCategory
@@ -75,12 +102,21 @@ const Portfolio: React.FC<PortfolioProps> = ({ onNavigateHome }) => {
           </motion.h1>
           
           <motion.p 
-            className="text-gray-medium max-w-2xl"
+            className="text-gray-medium max-w-2xl mb-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
           >
             Explore our complete collection of works across different categories.
+          </motion.p>
+
+          <motion.p 
+            className="text-sm text-gray-light"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
+            Total works: {workItems.length}
           </motion.p>
         </motion.div>
 
@@ -107,6 +143,11 @@ const Portfolio: React.FC<PortfolioProps> = ({ onNavigateHome }) => {
               transition={{ duration: 0.3, delay: 0.1 * index }}
             >
               {category.label}
+              {activeCategory === category.id && (
+                <span className="ml-2 text-xs">
+                  ({filteredWorks.length})
+                </span>
+              )}
             </motion.button>
           ))}
         </motion.div>
