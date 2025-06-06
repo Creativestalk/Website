@@ -19,8 +19,9 @@ const UploadFile: React.FC = () => {
   const [success, setSuccess] = useState(false);
   const [thumbnail, setThumbnail] = useState('');
 
-  const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
-  const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+  // Cloudinary configuration - now properly set
+  const CLOUDINARY_CLOUD_NAME = 'dbthy4lg2';
+  const CLOUDINARY_UPLOAD_PRESET = 'WEBSITE';
   const CORRECT_PASSWORD = 'VASACHA';
 
   const handleYoutubeUrlChange = (url: string) => {
@@ -82,10 +83,6 @@ const UploadFile: React.FC = () => {
     try {
       if (uploadType === 'file' && file) {
         // Handle file upload to Cloudinary
-        if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) {
-          throw new Error('Cloudinary configuration missing. Please set up environment variables.');
-        }
-
         const formData = new FormData();
         formData.append('file', file);
         formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
@@ -99,7 +96,8 @@ const UploadFile: React.FC = () => {
         );
 
         if (!response.ok) {
-          throw new Error('Failed to upload file to Cloudinary');
+          const errorData = await response.json();
+          throw new Error(errorData.error?.message || 'Failed to upload file to Cloudinary');
         }
 
         const data = await response.json();
@@ -115,6 +113,10 @@ const UploadFile: React.FC = () => {
         });
 
         console.log('File uploaded and saved:', portfolioItem);
+        
+        // Trigger portfolio update event
+        window.dispatchEvent(new CustomEvent('portfolioUpdated'));
+        
         setSuccess(true);
         resetForm();
       } else if (uploadType === 'link' && youtubeUrl) {
@@ -129,6 +131,10 @@ const UploadFile: React.FC = () => {
         });
         
         console.log('YouTube video saved:', portfolioItem);
+        
+        // Trigger portfolio update event
+        window.dispatchEvent(new CustomEvent('portfolioUpdated'));
+        
         setSuccess(true);
         resetForm();
       }
