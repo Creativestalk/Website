@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { workItems } from '../data/works';
 import WorkCard from '../components/WorkCard';
 
@@ -24,56 +25,131 @@ export const categories: { id: Category; label: string }[] = [
   { id: 'motiongraphics', label: 'Motion Graphics' },
 ];
 
-const Portfolio: React.FC = () => {
+interface PortfolioProps {
+  onNavigateHome: (scrollToWorks?: boolean) => void;
+}
+
+const Portfolio: React.FC<PortfolioProps> = ({ onNavigateHome }) => {
   const [activeCategory, setActiveCategory] = useState<Category>('all');
 
   const filteredWorks = workItems.filter(work =>
     activeCategory === 'all' ? true : work.category === activeCategory
   );
 
+  const handleBackClick = () => {
+    onNavigateHome(true); // Navigate back to home and scroll to works section
+  };
+
   return (
     <div className="min-h-screen bg-dark text-white">
       <div className="container mx-auto px-4 py-20">
         {/* Header */}
-        <div className="mb-12">
-          <a
-            href="/"
+        <motion.div 
+          className="mb-12"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <motion.button
+            onClick={handleBackClick}
             className="inline-flex items-center text-gray-medium hover:text-primary transition-colors duration-300 mb-8 group"
+            whileHover={{ x: -5 }}
+            transition={{ type: "spring", stiffness: 400, damping: 10 }}
           >
-            <ArrowLeft className="h-5 w-5 mr-2 transition-transform duration-300 group-hover:-translate-x-1" />
-            Back to Home
-          </a>
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">Our Portfolio</h1>
-          <p className="text-gray-medium max-w-2xl">
+            <motion.div
+              animate={{ x: [-2, 0, -2] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <ArrowLeft className="h-5 w-5 mr-2" />
+            </motion.div>
+            Back to Works
+          </motion.button>
+          
+          <motion.h1 
+            className="text-4xl md:text-5xl font-bold mb-6"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            Our Portfolio
+          </motion.h1>
+          
+          <motion.p 
+            className="text-gray-medium max-w-2xl"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
             Explore our complete collection of works across different categories.
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
 
         {/* Category Filters */}
-        <div className="flex flex-wrap gap-3 mb-12">
-          {categories.map(category => (
-            <button
+        <motion.div 
+          className="flex flex-wrap gap-3 mb-12"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+        >
+          {categories.map((category, index) => (
+            <motion.button
               key={category.id}
               onClick={() => setActiveCategory(category.id)}
               className={`px-6 py-2 rounded-full transition-all duration-300 ${
                 activeCategory === category.id
-                  ? 'bg-primary text-white'
-                  : 'bg-dark-card text-gray-medium hover:bg-dark-lighter'
+                  ? 'bg-primary text-white shadow-lg shadow-primary/25'
+                  : 'bg-dark-card text-gray-medium hover:bg-dark-lighter hover:text-white'
               }`}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.1 * index }}
             >
               {category.label}
-            </button>
+            </motion.button>
           ))}
-        </div>
+        </motion.div>
 
         {/* Portfolio Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-full">
+        <motion.div 
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-full"
+          layout
+        >
           {filteredWorks.map((work, index) => (
-            <div key={work.id} className="aspect-video max-w-xs mx-auto">
+            <motion.div 
+              key={work.id} 
+              className="aspect-video max-w-xs mx-auto"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ 
+                duration: 0.5, 
+                delay: index * 0.1,
+                type: "spring",
+                stiffness: 100
+              }}
+              layout
+              whileHover={{ 
+                scale: 1.05,
+                transition: { duration: 0.2 }
+              }}
+            >
               <WorkCard work={work} index={index} />
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
+
+        {filteredWorks.length === 0 && (
+          <motion.div
+            className="text-center py-20"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <p className="text-gray-medium text-lg">No works found in this category.</p>
+          </motion.div>
+        )}
       </div>
     </div>
   );

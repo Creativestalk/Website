@@ -317,3 +317,70 @@ h1, h2, h3, h4, h5, h6 {
   background: linear-gradient(to right, rgba(26, 26, 26, 0.5), rgba(38, 38, 38, 0.5));
   transform: translateX(4px);
 }
+
+/* Text animation utilities */
+.text-reveal {
+  overflow: hidden;
+}
+
+.text-reveal span {
+  display: inline-block;
+  transform: translateY(100%);
+  animation: textReveal 0.8s ease-out forwards;
+}
+
+@keyframes textReveal {
+  to {
+    transform: translateY(0);
+  }
+}
+
+.text-glow {
+  text-shadow: 0 0 10px rgba(255, 165, 0, 0.5);
+}
+
+.text-gradient {
+  background: linear-gradient(45deg, #FFA500, #FFD700, #FFA500);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientShift 3s ease-in-out infinite;
+}
+
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Floating animation for elements */
+.float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Pulse glow effect */
+.pulse-glow {
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(255, 165, 0, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 165, 0, 0.6);
+  }
+}
