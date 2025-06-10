@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { getWorkItems } from '../data/works';
+import { getWorkItems, getDefaultWorkItems } from '../data/works';
 import WorkCard from '../components/WorkCard';
 import { WorkItem } from '../types';
 
@@ -32,7 +32,7 @@ interface PortfolioProps {
 
 const Portfolio: React.FC<PortfolioProps> = ({ onNavigateHome }) => {
   const [activeCategory, setActiveCategory] = useState<Category>('all');
-  const [workItems, setWorkItems] = useState<WorkItem[]>([]);
+  const [workItems, setWorkItems] = useState<WorkItem[]>(getDefaultWorkItems());
   const [loading, setLoading] = useState(true);
 
   // Load work items on component mount and when returning to portfolio
@@ -44,6 +44,7 @@ const Portfolio: React.FC<PortfolioProps> = ({ onNavigateHome }) => {
         setWorkItems(items);
       } catch (error) {
         console.error('Error loading work items:', error);
+        // Keep default items if there's an error
       } finally {
         setLoading(false);
       }
@@ -59,17 +60,6 @@ const Portfolio: React.FC<PortfolioProps> = ({ onNavigateHome }) => {
   const handleBackClick = () => {
     onNavigateHome(true); // Navigate back to home and scroll to works section
   };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-dark text-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="inline-block h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
-          <p className="text-gray-medium">Loading portfolio...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-dark text-white">
@@ -120,7 +110,7 @@ const Portfolio: React.FC<PortfolioProps> = ({ onNavigateHome }) => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
           >
-            Total works: {workItems.length}
+            Total works: {workItems.length} {loading && '(updating...)'}
           </motion.p>
         </motion.div>
 
@@ -156,6 +146,19 @@ const Portfolio: React.FC<PortfolioProps> = ({ onNavigateHome }) => {
           ))}
         </motion.div>
 
+        {/* Loading indicator */}
+        {loading && (
+          <motion.div
+            className="text-center py-8"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="inline-block h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
+            <p className="text-gray-medium">Loading latest portfolio items...</p>
+          </motion.div>
+        )}
+
         {/* Portfolio Grid */}
         <motion.div 
           className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-full"
@@ -185,7 +188,7 @@ const Portfolio: React.FC<PortfolioProps> = ({ onNavigateHome }) => {
           ))}
         </motion.div>
 
-        {filteredWorks.length === 0 && (
+        {filteredWorks.length === 0 && !loading && (
           <motion.div
             className="text-center py-20"
             initial={{ opacity: 0 }}

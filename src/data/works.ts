@@ -97,5 +97,10 @@ export const getWorkItems = async (): Promise<WorkItem[]> => {
   }
 };
 
-// For backward compatibility - now returns a promise
-export const workItems = getWorkItems();
+// Synchronous function that returns default items immediately
+export const getDefaultWorkItems = (): WorkItem[] => {
+  return defaultWorkItems;
+};
+
+// For backward compatibility - now returns default items synchronously
+export const workItems = defaultWorkItems;

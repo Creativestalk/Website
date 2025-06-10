@@ -16,6 +16,7 @@ function App() {
   const [showAnimation, setShowAnimation] = useState(true);
   const [showContent, setShowContent] = useState(false);
   const [currentPage, setCurrentPage] = useState('home');
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     document.title = "Creativestalk Studio | Visual Storytelling";
@@ -35,7 +36,15 @@ function App() {
     window.addEventListener('popstate', handlePopState);
     handlePopState(); // Set initial page
 
-    return () => window.removeEventListener('popstate', handlePopState);
+    // Set loading to false after a short delay to ensure everything is ready
+    const loadingTimer = setTimeout(() => {
+      setIsLoading(false);
+    }, 100);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+      clearTimeout(loadingTimer);
+    };
   }, []);
 
   const handleAnimationComplete = () => {
@@ -64,6 +73,18 @@ function App() {
       }, 0);
     }
   };
+
+  // Show loading screen while app initializes
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-dark flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
+          <p className="text-white">Loading Creativestalk Studio...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (currentPage === 'upload') {
     return <UploadFile />;

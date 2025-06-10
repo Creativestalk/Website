@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import WorkCard from '../components/WorkCard';
-import { getWorkItems } from '../data/works';
+import { getWorkItems, getDefaultWorkItems } from '../data/works';
 import { WorkItem } from '../types';
 
 interface WorksSectionProps {
@@ -11,8 +11,8 @@ interface WorksSectionProps {
 
 const WorksSection: React.FC<WorksSectionProps> = ({ onNavigateToPortfolio }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [workItems, setWorkItems] = useState<WorkItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [workItems, setWorkItems] = useState<WorkItem[]>(getDefaultWorkItems());
+  const [loading, setLoading] = useState(false);
   const trackRef = useRef<HTMLDivElement>(null);
   
   // Load work items on component mount
@@ -24,6 +24,7 @@ const WorksSection: React.FC<WorksSectionProps> = ({ onNavigateToPortfolio }) =>
         setWorkItems(items);
       } catch (error) {
         console.error('Error loading work items:', error);
+        // Keep default items if there's an error
       } finally {
         setLoading(false);
       }
@@ -47,19 +48,6 @@ const WorksSection: React.FC<WorksSectionProps> = ({ onNavigateToPortfolio }) =>
   const handlePortfolioClick = () => {
     onNavigateToPortfolio();
   };
-
-  if (loading) {
-    return (
-      <section id="works" className="py-20 bg-dark-lighter">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="text-center">
-            <div className="inline-block h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
-            <p className="text-gray-medium">Loading works...</p>
-          </div>
-        </div>
-      </section>
-    );
-  }
 
   return (
     <section id="works" className="py-20 bg-dark-lighter">
@@ -92,7 +80,7 @@ const WorksSection: React.FC<WorksSectionProps> = ({ onNavigateToPortfolio }) =>
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.15 }}
           >
-            {workItems.length} total works
+            {workItems.length} total works {loading && '(updating...)'}
           </motion.p>
           
           <motion.button
