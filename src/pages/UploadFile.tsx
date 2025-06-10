@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ArrowLeft, Upload, Link as LinkIcon, CheckCircle } from 'lucide-react';
 import { categories } from './Portfolio';
 import getYoutubeId from 'get-youtube-id';
-import { portfolioStorage } from '../utils/portfolioStorage';
+import { portfolioService } from '../utils/portfolioService';
 
 const UploadFile: React.FC = () => {
   const [uploadType, setUploadType] = useState<'file' | 'link'>('link');
@@ -19,7 +19,7 @@ const UploadFile: React.FC = () => {
   const [success, setSuccess] = useState(false);
   const [thumbnail, setThumbnail] = useState('');
 
-  // Cloudinary configuration - now properly set
+  // Cloudinary configuration
   const CLOUDINARY_CLOUD_NAME = 'dbthy4lg2';
   const CLOUDINARY_UPLOAD_PRESET = 'WEBSITE';
   const CORRECT_PASSWORD = 'VASACHA';
@@ -102,38 +102,34 @@ const UploadFile: React.FC = () => {
 
         const data = await response.json();
         
-        // Save to local storage
-        const portfolioItem = portfolioStorage.add({
+        // Save to Supabase database
+        await portfolioService.add({
           title,
           category: newCategory || category,
           description,
-          youtubeUrl: data.secure_url,
+          cloudinary_url: data.secure_url,
           thumbnail: data.thumbnail_url || data.secure_url,
-          views: views || undefined
+          views: views || undefined,
+          upload_type: 'file'
         });
 
-        console.log('File uploaded and saved:', portfolioItem);
-        
-        // Trigger portfolio update event
-        window.dispatchEvent(new CustomEvent('portfolioUpdated'));
+        console.log('File uploaded and saved to database');
         
         setSuccess(true);
         resetForm();
       } else if (uploadType === 'link' && youtubeUrl) {
-        // Save YouTube link to local storage
-        const portfolioItem = portfolioStorage.add({
+        // Save YouTube link to Supabase database
+        await portfolioService.add({
           title,
           category: newCategory || category,
           description,
-          youtubeUrl,
+          youtube_url: youtubeUrl,
           thumbnail,
-          views: views || undefined
+          views: views || undefined,
+          upload_type: 'link'
         });
         
-        console.log('YouTube video saved:', portfolioItem);
-        
-        // Trigger portfolio update event
-        window.dispatchEvent(new CustomEvent('portfolioUpdated'));
+        console.log('YouTube video saved to database');
         
         setSuccess(true);
         resetForm();
@@ -182,7 +178,7 @@ const UploadFile: React.FC = () => {
               <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
               <h2 className="text-2xl font-bold text-green-500 mb-2">Upload Successful!</h2>
               <p className="text-gray-medium mb-6">
-                Your {uploadType === 'file' ? 'file has been uploaded' : 'YouTube video has been added'} to the portfolio.
+                Your {uploadType === 'file' ? 'file has been uploaded' : 'YouTube video has been added'} to the portfolio and is now visible to all users.
               </p>
               <div className="space-y-4">
                 <button

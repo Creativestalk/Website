@@ -1,5 +1,5 @@
 import { WorkItem } from '../types';
-import { portfolioStorage } from '../utils/portfolioStorage';
+import { portfolioService } from '../utils/portfolioService';
 
 // Default/demo work items
 const defaultWorkItems: WorkItem[] = [
@@ -73,23 +73,29 @@ const defaultWorkItems: WorkItem[] = [
   }
 ];
 
-// Get all work items (default + uploaded)
-export const getWorkItems = (): WorkItem[] => {
-  const uploadedItems = portfolioStorage.getAll();
-  
-  // Convert uploaded items to WorkItem format
-  const convertedItems: WorkItem[] = uploadedItems.map(item => ({
-    id: item.id,
-    title: item.title,
-    views: item.views,
-    thumbnail: item.thumbnail,
-    youtubeUrl: item.youtubeUrl || '#',
-    category: item.category as WorkItem['category']
-  }));
+// Get all work items (default + uploaded from Supabase)
+export const getWorkItems = async (): Promise<WorkItem[]> => {
+  try {
+    const supabaseItems = await portfolioService.getAll();
+    
+    // Convert Supabase items to WorkItem format
+    const convertedItems: WorkItem[] = supabaseItems.map(item => ({
+      id: item.id,
+      title: item.title,
+      views: item.views,
+      thumbnail: item.thumbnail,
+      youtubeUrl: item.youtube_url || item.cloudinary_url || '#',
+      category: item.category as WorkItem['category']
+    }));
 
-  // Combine uploaded items with default items
-  return [...convertedItems, ...defaultWorkItems];
+    // Combine uploaded items with default items
+    return [...convertedItems, ...defaultWorkItems];
+  } catch (error) {
+    console.error('Error fetching work items:', error);
+    // Return default items if there's an error
+    return defaultWorkItems;
+  }
 };
 
-// For backward compatibility
+// For backward compatibility - now returns a promise
 export const workItems = getWorkItems();

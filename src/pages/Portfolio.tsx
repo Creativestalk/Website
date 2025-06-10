@@ -33,30 +33,23 @@ interface PortfolioProps {
 const Portfolio: React.FC<PortfolioProps> = ({ onNavigateHome }) => {
   const [activeCategory, setActiveCategory] = useState<Category>('all');
   const [workItems, setWorkItems] = useState<WorkItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
   // Load work items on component mount and when returning to portfolio
   useEffect(() => {
-    const loadWorkItems = () => {
-      const items = getWorkItems();
-      setWorkItems(items);
+    const loadWorkItems = async () => {
+      setLoading(true);
+      try {
+        const items = await getWorkItems();
+        setWorkItems(items);
+      } catch (error) {
+        console.error('Error loading work items:', error);
+      } finally {
+        setLoading(false);
+      }
     };
 
     loadWorkItems();
-
-    // Listen for storage changes to update portfolio in real-time
-    const handleStorageChange = () => {
-      loadWorkItems();
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    
-    // Also listen for custom events when items are added
-    window.addEventListener('portfolioUpdated', handleStorageChange);
-
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('portfolioUpdated', handleStorageChange);
-    };
   }, []);
 
   const filteredWorks = workItems.filter(work =>
@@ -66,6 +59,17 @@ const Portfolio: React.FC<PortfolioProps> = ({ onNavigateHome }) => {
   const handleBackClick = () => {
     onNavigateHome(true); // Navigate back to home and scroll to works section
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-dark text-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
+          <p className="text-gray-medium">Loading portfolio...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-dark text-white">

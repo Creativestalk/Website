@@ -12,29 +12,24 @@ interface WorksSectionProps {
 const WorksSection: React.FC<WorksSectionProps> = ({ onNavigateToPortfolio }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [workItems, setWorkItems] = useState<WorkItem[]>([]);
+  const [loading, setLoading] = useState(true);
   const trackRef = useRef<HTMLDivElement>(null);
   
   // Load work items on component mount
   useEffect(() => {
-    const loadWorkItems = () => {
-      const items = getWorkItems();
-      setWorkItems(items);
+    const loadWorkItems = async () => {
+      setLoading(true);
+      try {
+        const items = await getWorkItems();
+        setWorkItems(items);
+      } catch (error) {
+        console.error('Error loading work items:', error);
+      } finally {
+        setLoading(false);
+      }
     };
 
     loadWorkItems();
-
-    // Listen for portfolio updates
-    const handlePortfolioUpdate = () => {
-      loadWorkItems();
-    };
-
-    window.addEventListener('portfolioUpdated', handlePortfolioUpdate);
-    window.addEventListener('storage', handlePortfolioUpdate);
-
-    return () => {
-      window.removeEventListener('portfolioUpdated', handlePortfolioUpdate);
-      window.removeEventListener('storage', handlePortfolioUpdate);
-    };
   }, []);
   
   const slideNext = () => {
@@ -52,6 +47,19 @@ const WorksSection: React.FC<WorksSectionProps> = ({ onNavigateToPortfolio }) =>
   const handlePortfolioClick = () => {
     onNavigateToPortfolio();
   };
+
+  if (loading) {
+    return (
+      <section id="works" className="py-20 bg-dark-lighter">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="text-center">
+            <div className="inline-block h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
+            <p className="text-gray-medium">Loading works...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="works" className="py-20 bg-dark-lighter">
