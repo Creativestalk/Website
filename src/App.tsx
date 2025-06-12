@@ -11,6 +11,7 @@ import HeroAnimation from './components/HeroAnimation';
 import CursorTrail from './components/CursorTrail';
 import Portfolio from './pages/Portfolio';
 import UploadFile from './pages/UploadFile';
+import Admin from './pages/Admin';
 
 function App() {
   const [showAnimation, setShowAnimation] = useState(true);
@@ -28,6 +29,8 @@ function App() {
         setCurrentPage('portfolio');
       } else if (path === '/uploadfile007') {
         setCurrentPage('upload');
+      } else if (path === '/admin') {
+        setCurrentPage('admin');
       } else {
         setCurrentPage('home');
       }
@@ -88,6 +91,10 @@ function App() {
 
   if (currentPage === 'upload') {
     return <UploadFile />;
+  }
+
+  if (currentPage === 'admin') {
+    return <Admin />;
   }
 
   return (

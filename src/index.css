@@ -173,6 +173,21 @@ h1, h2, h3, h4, h5, h6 {
   @apply w-full p-3 bg-[#1A1A1A] border border-gray-700 rounded-md text-white focus:border-[#FFA500] focus:outline-none focus:ring-1 focus:ring-[#FFA500] transition-all duration-300;
 }
 
+/* Line clamp utility */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 /* Animations */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(20px); }
