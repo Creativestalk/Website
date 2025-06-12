@@ -3,32 +3,24 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-// Fallback configuration for development/demo purposes
-const fallbackUrl = 'https://demo.supabase.co';
-const fallbackKey = 'demo-key';
+// Helper function to check if Supabase is properly configured
+export const isSupabaseConfigured = (): boolean => {
+  return !!(supabaseUrl && 
+    supabaseAnonKey && 
+    supabaseUrl.startsWith('https://') && 
+    supabaseUrl.includes('.supabase.co') &&
+    supabaseAnonKey.length > 20);
+};
 
-// Use fallback values if environment variables are not available
-const url = supabaseUrl || fallbackUrl;
-const key = supabaseAnonKey || fallbackKey;
+// Create Supabase client only if properly configured
+export const supabase = isSupabaseConfigured() 
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : createClient('https://placeholder.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBsYWNlaG9sZGVyIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NDk3NzEyMDAuZXhwIjoxOTY1MzQ3MjAwfQ.placeholder');
 
-let supabase: any;
-
-try {
-  supabase = createClient(url, key);
-} catch (error) {
-  console.warn('Supabase client creation failed, using mock client:', error);
-  // Create a mock client for development
-  supabase = {
-    from: () => ({
-      select: () => ({ data: [], error: null }),
-      insert: () => ({ data: null, error: { message: 'Supabase not configured' } }),
-      delete: () => ({ error: null }),
-      update: () => ({ error: null })
-    })
-  };
+// Log configuration status
+if (!isSupabaseConfigured()) {
+  console.warn('Supabase is not properly configured. Please set up your environment variables by clicking "Connect to Supabase" in the top right corner.');
 }
-
-export { supabase };
 
 export type PortfolioItem = {
   id: string;

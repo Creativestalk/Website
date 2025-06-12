@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Upload, Link as LinkIcon, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Upload, Link as LinkIcon, CheckCircle, AlertCircle } from 'lucide-react';
 import { categories } from './Portfolio';
 import getYoutubeId from 'get-youtube-id';
 import { portfolioService } from '../utils/portfolioService';
+import { isSupabaseConfigured } from '../lib/supabase';
 
 const UploadFile: React.FC = () => {
   const [uploadType, setUploadType] = useState<'file' | 'link'>('link');
@@ -23,6 +24,9 @@ const UploadFile: React.FC = () => {
   const CLOUDINARY_CLOUD_NAME = 'dbthy4lg2';
   const CLOUDINARY_UPLOAD_PRESET = 'WEBSITE';
   const CORRECT_PASSWORD = 'VASACHA';
+
+  // Check if Supabase is configured
+  const supabaseConfigured = isSupabaseConfigured();
 
   const handleYoutubeUrlChange = (url: string) => {
     setYoutubeUrl(url);
@@ -67,6 +71,11 @@ const UploadFile: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (!supabaseConfigured) {
+      setError('Supabase not configured. Please set up your Supabase connection by adding VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to your .env file.');
+      return;
+    }
+
     if (password !== CORRECT_PASSWORD) {
       setError('Incorrect password');
       return;
@@ -172,6 +181,21 @@ const UploadFile: React.FC = () => {
 
         <div className="bg-dark-card rounded-lg p-8 shadow-xl border border-white/5">
           <h1 className="text-3xl font-bold mb-8">Upload Portfolio Item</h1>
+
+          {/* Supabase Configuration Warning */}
+          {!supabaseConfigured && (
+            <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-4 mb-6 flex items-start space-x-3">
+              <AlertCircle className="h-5 w-5 text-yellow-500 mt-0.5 flex-shrink-0" />
+              <div>
+                <h3 className="text-yellow-500 font-medium mb-1">Supabase Not Configured</h3>
+                <p className="text-sm text-yellow-200">
+                  To enable file uploads, you need to configure your Supabase connection. 
+                  Add your <code className="bg-yellow-500/20 px-1 rounded">VITE_SUPABASE_URL</code> and{' '}
+                  <code className="bg-yellow-500/20 px-1 rounded">VITE_SUPABASE_ANON_KEY</code> to your .env file.
+                </p>
+              </div>
+            </div>
+          )}
 
           {success ? (
             <div className="text-center py-8">
@@ -386,8 +410,12 @@ const UploadFile: React.FC = () => {
 
               <button
                 type="submit"
-                disabled={loading}
-                className="btn-primary w-full py-3 flex items-center justify-center"
+                disabled={loading || !supabaseConfigured}
+                className={`w-full py-3 flex items-center justify-center transition-all duration-300 ${
+                  !supabaseConfigured 
+                    ? 'bg-gray-600 text-gray-400 cursor-not-allowed' 
+                    : 'btn-primary'
+                }`}
               >
                 {loading ? (
                   <span className="inline-block h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -395,6 +423,12 @@ const UploadFile: React.FC = () => {
                   'Submit'
                 )}
               </button>
+
+              {!supabaseConfigured && (
+                <p className="text-sm text-gray-medium text-center">
+                  Configure Supabase to enable uploads
+                </p>
+              )}
             </form>
           )}
         </div>

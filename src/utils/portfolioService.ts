@@ -1,4 +1,4 @@
-import { supabase, PortfolioItem } from '../lib/supabase';
+import { supabase, PortfolioItem, isSupabaseConfigured } from '../lib/supabase';
 
 export interface CreatePortfolioItem {
   title: string;
@@ -15,8 +15,7 @@ export const portfolioService = {
   // Get all portfolio items
   async getAll(): Promise<PortfolioItem[]> {
     try {
-      // Check if Supabase is properly configured
-      if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
+      if (!isSupabaseConfigured()) {
         console.warn('Supabase not configured, returning empty array');
         return [];
       }
@@ -41,9 +40,8 @@ export const portfolioService = {
   // Add new portfolio item
   async add(item: CreatePortfolioItem): Promise<PortfolioItem | null> {
     try {
-      // Check if Supabase is properly configured
-      if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
-        throw new Error('Supabase not configured. Please set up your Supabase connection.');
+      if (!isSupabaseConfigured()) {
+        throw new Error('Supabase not configured. Please set up your Supabase connection by adding VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to your .env file.');
       }
 
       const { data, error } = await supabase
@@ -67,8 +65,7 @@ export const portfolioService = {
   // Remove portfolio item
   async remove(id: string): Promise<boolean> {
     try {
-      // Check if Supabase is properly configured
-      if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
+      if (!isSupabaseConfigured()) {
         console.warn('Supabase not configured');
         return false;
       }
@@ -93,8 +90,7 @@ export const portfolioService = {
   // Update portfolio item
   async update(id: string, updates: Partial<CreatePortfolioItem>): Promise<boolean> {
     try {
-      // Check if Supabase is properly configured
-      if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
+      if (!isSupabaseConfigured()) {
         console.warn('Supabase not configured');
         return false;
       }
