@@ -47,6 +47,7 @@ const Admin: React.FC = () => {
   const [actionLoading, setActionLoading] = useState(false);
   const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const [sourceFilter, setSourceFilter] = useState<'all' | 'database' | 'code'>('all');
+  const [deleteProgress, setDeleteProgress] = useState<{ current: number; total: number } | null>(null);
 
   const ADMIN_PASSWORD = 'VASACHA';
   const supabaseConfigured = isSupabaseConfigured();
@@ -140,6 +141,8 @@ const Admin: React.FC = () => {
 
   const handleDelete = async (itemIds: string[]) => {
     setActionLoading(true);
+    setDeleteProgress({ current: 0, total: itemIds.length });
+    
     try {
       // Only delete database items
       const databaseItemIds = itemIds.filter(id => {
@@ -157,19 +160,27 @@ const Admin: React.FC = () => {
       }
 
       if (databaseItemIds.length > 0) {
-        const deletePromises = databaseItemIds.map(id => portfolioService.remove(id));
-        await Promise.all(deletePromises);
+        // Use bulk delete for better performance and progress tracking
+        const result = await portfolioService.bulkRemove(databaseItemIds);
         
-        setItems(prev => prev.filter(item => !databaseItemIds.includes(item.id)));
-        showNotification('success', `Deleted ${databaseItemIds.length} database item(s) successfully`);
+        if (result.success.length > 0) {
+          setItems(prev => prev.filter(item => !result.success.includes(item.id)));
+          showNotification('success', `Successfully deleted ${result.success.length} item(s)`);
+        }
+
+        if (result.failed.length > 0) {
+          showNotification('error', `Failed to delete ${result.failed.length} item(s). Check console for details.`);
+        }
       }
       
       setSelectedItems(new Set());
       setShowDeleteModal(false);
     } catch (error) {
-      showNotification('error', 'Failed to delete items');
+      console.error('Delete operation failed:', error);
+      showNotification('error', 'Failed to delete items. Please check your connection and try again.');
     } finally {
       setActionLoading(false);
+      setDeleteProgress(null);
     }
   };
 
@@ -656,6 +667,23 @@ const Admin: React.FC = () => {
                     </span>
                   )}
                 </p>
+
+                {/* Progress indicator */}
+                {deleteProgress && (
+                  <div className="mb-4">
+                    <div className="flex justify-between text-sm text-gray-medium mb-2">
+                      <span>Deleting items...</span>
+                      <span>{deleteProgress.current}/{deleteProgress.total}</span>
+                    </div>
+                    <div className="w-full bg-gray-700 rounded-full h-2">
+                      <div 
+                        className="bg-primary h-2 rounded-full transition-all duration-300"
+                        style={{ width: `${(deleteProgress.current / deleteProgress.total) * 100}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                )}
+
                 <div className="flex space-x-3">
                   <button
                     onClick={() => setShowDeleteModal(false)}
