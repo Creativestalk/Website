@@ -28,6 +28,18 @@ const UploadFile: React.FC = () => {
   // Check if Supabase is configured
   const supabaseConfigured = isSupabaseConfigured();
 
+  // Function to trigger portfolio refresh across the app
+  const triggerPortfolioRefresh = () => {
+    // Trigger custom event for other components
+    window.dispatchEvent(new CustomEvent('portfolio-updated'));
+    
+    // Also use localStorage to trigger refresh in other tabs
+    localStorage.setItem('portfolio_refresh', Date.now().toString());
+    setTimeout(() => {
+      localStorage.removeItem('portfolio_refresh');
+    }, 1000);
+  };
+
   const handleYoutubeUrlChange = (url: string) => {
     setYoutubeUrl(url);
     const videoId = getYoutubeId(url);
@@ -126,6 +138,9 @@ const UploadFile: React.FC = () => {
         
         setSuccess(true);
         resetForm();
+        
+        // Trigger portfolio refresh across the app
+        triggerPortfolioRefresh();
       } else if (uploadType === 'link' && youtubeUrl) {
         // Save YouTube link to Supabase database
         await portfolioService.add({
@@ -142,6 +157,9 @@ const UploadFile: React.FC = () => {
         
         setSuccess(true);
         resetForm();
+        
+        // Trigger portfolio refresh across the app
+        triggerPortfolioRefresh();
       }
     } catch (err) {
       console.error('Upload error:', err);

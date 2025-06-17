@@ -52,6 +52,18 @@ const Admin: React.FC = () => {
   const ADMIN_PASSWORD = 'VASACHA';
   const supabaseConfigured = isSupabaseConfigured();
 
+  // Function to trigger portfolio refresh across the app
+  const triggerPortfolioRefresh = () => {
+    // Trigger custom event for other components
+    window.dispatchEvent(new CustomEvent('portfolio-updated'));
+    
+    // Also use localStorage to trigger refresh in other tabs
+    localStorage.setItem('portfolio_refresh', Date.now().toString());
+    setTimeout(() => {
+      localStorage.removeItem('portfolio_refresh');
+    }, 1000);
+  };
+
   // Load portfolio items from both sources
   const loadItems = async () => {
     setLoading(true);
@@ -166,6 +178,9 @@ const Admin: React.FC = () => {
         if (result.success.length > 0) {
           setItems(prev => prev.filter(item => !result.success.includes(item.id)));
           showNotification('success', `Successfully deleted ${result.success.length} item(s)`);
+          
+          // Trigger portfolio refresh across the app
+          triggerPortfolioRefresh();
         }
 
         if (result.failed.length > 0) {
@@ -206,6 +221,9 @@ const Admin: React.FC = () => {
         setShowEditModal(false);
         setEditingItem(null);
         showNotification('success', 'Item updated successfully');
+        
+        // Trigger portfolio refresh across the app
+        triggerPortfolioRefresh();
       } else {
         showNotification('error', 'Failed to update item');
       }

@@ -15,22 +15,44 @@ const WorksSection: React.FC<WorksSectionProps> = ({ onNavigateToPortfolio }) =>
   const [loading, setLoading] = useState(false);
   const trackRef = useRef<HTMLDivElement>(null);
   
+  // Load work items function
+  const loadWorkItems = async () => {
+    setLoading(true);
+    try {
+      const items = await getWorkItems();
+      setWorkItems(items);
+    } catch (error) {
+      console.error('Error loading work items:', error);
+      // Keep default items if there's an error
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Load work items on component mount
   useEffect(() => {
-    const loadWorkItems = async () => {
-      setLoading(true);
-      try {
-        const items = await getWorkItems();
-        setWorkItems(items);
-      } catch (error) {
-        console.error('Error loading work items:', error);
-        // Keep default items if there's an error
-      } finally {
-        setLoading(false);
+    loadWorkItems();
+  }, []);
+
+  // Listen for portfolio updates
+  useEffect(() => {
+    const handlePortfolioUpdate = () => {
+      loadWorkItems();
+    };
+
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'portfolio_refresh' || e.key === null) {
+        loadWorkItems();
       }
     };
 
-    loadWorkItems();
+    window.addEventListener('portfolio-updated', handlePortfolioUpdate);
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('portfolio-updated', handlePortfolioUpdate);
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, []);
   
   const slideNext = () => {
