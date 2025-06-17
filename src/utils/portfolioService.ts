@@ -13,12 +13,14 @@ export interface CreatePortfolioItem {
 
 // Cloudinary configuration
 const CLOUDINARY_CLOUD_NAME = 'dbthy4lg2';
+const CLOUDINARY_UPLOAD_PRESET = 'WEBSITE';
 
 // Helper function to extract public ID from Cloudinary URL
 const extractCloudinaryPublicId = (url: string): string | null => {
   try {
     // Handle different Cloudinary URL formats
-    const regex = /\/(?:v\d+\/)?([^\/]+)\.[^\/]+$/;
+    // Example: https://res.cloudinary.com/dbthy4lg2/video/upload/v1234567890/sample.mp4
+    const regex = /\/upload\/(?:v\d+\/)?([^\/]+)\.[^\/]+$/;
     const match = url.match(regex);
     return match ? match[1] : null;
   } catch (error) {
@@ -30,8 +32,9 @@ const extractCloudinaryPublicId = (url: string): string | null => {
 // Helper function to delete file from Cloudinary
 const deleteFromCloudinary = async (publicId: string): Promise<boolean> => {
   try {
-    // Note: For security reasons, Cloudinary deletion should ideally be done server-side
-    // This is a client-side approach using the unsigned delete API
+    // Use the unsigned delete endpoint with the upload preset
+    const timestamp = Math.round(new Date().getTime() / 1000);
+    
     const response = await fetch(
       `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/destroy`,
       {
@@ -41,7 +44,8 @@ const deleteFromCloudinary = async (publicId: string): Promise<boolean> => {
         },
         body: JSON.stringify({
           public_id: publicId,
-          // Note: In production, you should use a signed request with timestamp and signature
+          timestamp: timestamp,
+          upload_preset: CLOUDINARY_UPLOAD_PRESET
         }),
       }
     );
@@ -49,7 +53,7 @@ const deleteFromCloudinary = async (publicId: string): Promise<boolean> => {
     const result = await response.json();
     console.log('Cloudinary deletion result:', result);
     
-    // Cloudinary returns "ok" for successful deletions
+    // Cloudinary returns "ok" for successful deletions, "not found" if already deleted
     return result.result === 'ok' || result.result === 'not found';
   } catch (error) {
     console.error('Error deleting from Cloudinary:', error);
@@ -117,6 +121,8 @@ export const portfolioService = {
         return false;
       }
 
+      console.log('Attempting to delete item with ID:', id);
+
       // First, get the item to check if it has a Cloudinary URL
       const { data: item, error: fetchError } = await supabase
         .from('portfolio_items')
@@ -129,12 +135,20 @@ export const portfolioService = {
         return false;
       }
 
+      if (!item) {
+        console.error('Item not found for deletion:', id);
+        return false;
+      }
+
+      console.log('Found item to delete:', item);
+
       // If the item has a Cloudinary URL, try to delete the file
-      if (item?.cloudinary_url) {
+      if (item.cloudinary_url) {
         const publicId = extractCloudinaryPublicId(item.cloudinary_url);
         if (publicId) {
           console.log('Attempting to delete from Cloudinary:', publicId);
-          await deleteFromCloudinary(publicId);
+          const cloudinaryDeleted = await deleteFromCloudinary(publicId);
+          console.log('Cloudinary deletion result:', cloudinaryDeleted);
         }
       }
 
@@ -146,10 +160,16 @@ export const portfolioService = {
 
       if (deleteError) {
         console.error('Error removing portfolio item from database:', deleteError);
+        console.error('Delete error details:', {
+          message: deleteError.message,
+          details: deleteError.details,
+          hint: deleteError.hint,
+          code: deleteError.code
+        });
         return false;
       }
 
-      console.log('Successfully deleted item:', id);
+      console.log('Successfully deleted item from database:', id);
       return true;
     } catch (error) {
       console.error('Error in remove:', error);
@@ -182,18 +202,23 @@ export const portfolioService = {
     }
   },
 
-  // Bulk delete items
+  // Bulk delete items with better error handling
   async bulkRemove(ids: string[]): Promise<{ success: string[]; failed: string[] }> {
     const success: string[] = [];
     const failed: string[] = [];
 
+    console.log('Starting bulk delete for IDs:', ids);
+
     for (const id of ids) {
       try {
+        console.log(`Deleting item ${id}...`);
         const result = await this.remove(id);
         if (result) {
           success.push(id);
+          console.log(`Successfully deleted item ${id}`);
         } else {
           failed.push(id);
+          console.log(`Failed to delete item ${id}`);
         }
       } catch (error) {
         console.error(`Failed to delete item ${id}:`, error);
@@ -201,6 +226,61 @@ export const portfolioService = {
       }
     }
 
+    console.log('Bulk delete completed:', { success, failed });
     return { success, failed };
+  },
+
+  // Test connection and permissions
+  async testConnection(): Promise<{ connected: boolean; canRead: boolean; canWrite: boolean; canDelete: boolean }> {
+    try {
+      if (!isSupabaseConfigured()) {
+        return { connected: false, canRead: false, canWrite: false, canDelete: false };
+      }
+
+      // Test read
+      const { data: readData, error: readError } = await supabase
+        .from('portfolio_items')
+        .select('id')
+        .limit(1);
+
+      const canRead = !readError;
+
+      // Test write
+      const testItem = {
+        title: 'Test Item',
+        category: 'test',
+        thumbnail: 'https://example.com/test.jpg',
+        upload_type: 'link' as const
+      };
+
+      const { data: writeData, error: writeError } = await supabase
+        .from('portfolio_items')
+        .insert([testItem])
+        .select()
+        .single();
+
+      const canWrite = !writeError && writeData;
+
+      // Test delete (if we successfully created a test item)
+      let canDelete = false;
+      if (canWrite && writeData) {
+        const { error: deleteError } = await supabase
+          .from('portfolio_items')
+          .delete()
+          .eq('id', writeData.id);
+
+        canDelete = !deleteError;
+      }
+
+      return {
+        connected: true,
+        canRead,
+        canWrite,
+        canDelete
+      };
+    } catch (error) {
+      console.error('Error testing connection:', error);
+      return { connected: false, canRead: false, canWrite: false, canDelete: false };
+    }
   }
 };

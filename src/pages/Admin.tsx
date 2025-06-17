@@ -17,7 +17,9 @@ import {
   Save,
   RefreshCw,
   Database,
-  Code
+  Code,
+  Wifi,
+  WifiOff
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { portfolioService } from '../utils/portfolioService';
@@ -48,6 +50,7 @@ const Admin: React.FC = () => {
   const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const [sourceFilter, setSourceFilter] = useState<'all' | 'database' | 'code'>('all');
   const [deleteProgress, setDeleteProgress] = useState<{ current: number; total: number } | null>(null);
+  const [connectionStatus, setConnectionStatus] = useState<{ connected: boolean; canRead: boolean; canWrite: boolean; canDelete: boolean } | null>(null);
 
   const ADMIN_PASSWORD = 'VASACHA';
   const supabaseConfigured = isSupabaseConfigured();
@@ -64,10 +67,26 @@ const Admin: React.FC = () => {
     }, 1000);
   };
 
+  // Test connection and permissions
+  const testConnection = async () => {
+    try {
+      const status = await portfolioService.testConnection();
+      setConnectionStatus(status);
+      return status;
+    } catch (error) {
+      console.error('Error testing connection:', error);
+      setConnectionStatus({ connected: false, canRead: false, canWrite: false, canDelete: false });
+      return { connected: false, canRead: false, canWrite: false, canDelete: false };
+    }
+  };
+
   // Load portfolio items from both sources
   const loadItems = async () => {
     setLoading(true);
     try {
+      // Test connection first
+      await testConnection();
+
       // Get items from database
       const databaseItems = await portfolioService.getAll();
       const adminDatabaseItems: AdminPortfolioItem[] = databaseItems.map(item => ({
@@ -172,8 +191,12 @@ const Admin: React.FC = () => {
       }
 
       if (databaseItemIds.length > 0) {
+        console.log('Attempting to delete database items:', databaseItemIds);
+        
         // Use bulk delete for better performance and progress tracking
         const result = await portfolioService.bulkRemove(databaseItemIds);
+        
+        console.log('Bulk delete result:', result);
         
         if (result.success.length > 0) {
           setItems(prev => prev.filter(item => !result.success.includes(item.id)));
@@ -345,9 +368,37 @@ const Admin: React.FC = () => {
                 Back to Home
               </a>
               <h1 className="text-2xl font-bold">Portfolio Admin</h1>
+              
+              {/* Connection Status */}
+              {connectionStatus && (
+                <div className={`flex items-center space-x-2 px-3 py-1 rounded-full text-xs ${
+                  connectionStatus.connected 
+                    ? 'bg-green-500/20 text-green-400' 
+                    : 'bg-red-500/20 text-red-400'
+                }`}>
+                  {connectionStatus.connected ? (
+                    <Wifi className="h-3 w-3" />
+                  ) : (
+                    <WifiOff className="h-3 w-3" />
+                  )}
+                  <span>
+                    {connectionStatus.connected 
+                      ? `Connected (R:${connectionStatus.canRead ? '✓' : '✗'} W:${connectionStatus.canWrite ? '✓' : '✗'} D:${connectionStatus.canDelete ? '✓' : '✗'})` 
+                      : 'Disconnected'
+                    }
+                  </span>
+                </div>
+              )}
             </div>
 
             <div className="flex items-center space-x-3">
+              <button
+                onClick={testConnection}
+                className="btn-outline px-4 py-2 text-sm flex items-center space-x-2"
+              >
+                <Wifi className="h-4 w-4" />
+                <span>Test Connection</span>
+              </button>
               <button
                 onClick={exportData}
                 className="btn-outline px-4 py-2 text-sm flex items-center space-x-2"
@@ -407,6 +458,19 @@ const Admin: React.FC = () => {
               <h3 className="text-yellow-500 font-medium mb-1">Supabase Not Configured</h3>
               <p className="text-sm text-yellow-200">
                 Database operations are limited. Configure Supabase to enable full functionality.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Connection Status Warning */}
+        {connectionStatus && !connectionStatus.canDelete && supabaseConfigured && (
+          <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4 mb-6 flex items-start space-x-3">
+            <AlertCircle className="h-5 w-5 text-red-500 mt-0.5 flex-shrink-0" />
+            <div>
+              <h3 className="text-red-500 font-medium mb-1">Delete Permission Issue</h3>
+              <p className="text-sm text-red-200">
+                Cannot delete items from database. Check your RLS policies and permissions.
               </p>
             </div>
           </div>
