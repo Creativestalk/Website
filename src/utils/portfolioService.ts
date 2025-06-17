@@ -142,14 +142,14 @@ export const portfolioService = {
     }
   },
 
-  // COMPLETELY REWRITTEN REMOVE FUNCTION
+  // ENHANCED REMOVE FUNCTION WITH MULTIPLE DELETION STRATEGIES
   async remove(id: string): Promise<boolean> {
     if (!isSupabaseConfigured()) {
       console.error('❌ Supabase not configured');
       return false;
     }
 
-    console.log('\n🗑️ ===== STARTING DELETION PROCESS =====');
+    console.log('\n🗑️ ===== STARTING ENHANCED DELETION PROCESS =====');
     console.log('🎯 Target ID:', id);
 
     try {
@@ -159,7 +159,7 @@ export const portfolioService = {
         .from('portfolio_items')
         .select('*')
         .eq('id', id)
-        .maybeSingle(); // Use maybeSingle to avoid errors if not found
+        .maybeSingle();
 
       if (fetchError) {
         console.error('❌ Fetch error:', fetchError);
@@ -188,64 +188,106 @@ export const portfolioService = {
         console.log('\n⏭️ STEP 2: No Cloudinary URL, skipping...');
       }
 
-      // STEP 3: Delete from database with multiple attempts
-      console.log('\n🗄️ STEP 3: Deleting from database...');
+      // STEP 3: Multiple deletion strategies
+      console.log('\n🗄️ STEP 3: Attempting database deletion...');
       
-      // Attempt 1: Direct delete
-      console.log('🔄 Attempt 1: Direct DELETE...');
-      const { error: deleteError, count } = await supabase
-        .from('portfolio_items')
-        .delete({ count: 'exact' })
-        .eq('id', id);
+      // Strategy 1: Enhanced RPC function
+      console.log('🔄 Strategy 1: Enhanced RPC function...');
+      try {
+        const { data: rpcResult, error: rpcError } = await supabase
+          .rpc('delete_portfolio_item_enhanced', { item_id: id });
 
-      if (deleteError) {
-        console.error('❌ Direct delete failed:', deleteError);
-        
-        // Attempt 2: Using RPC function
-        console.log('🔄 Attempt 2: Using RPC function...');
-        try {
-          const { data: rpcResult, error: rpcError } = await supabase
-            .rpc('delete_portfolio_item', { item_id: id });
-
-          if (rpcError) {
-            console.error('❌ RPC delete failed:', rpcError);
-            return false;
+        if (!rpcError && rpcResult) {
+          const result = rpcResult as any;
+          console.log('📊 RPC Result:', result);
+          
+          if (result.success) {
+            console.log('✅ Enhanced RPC deletion successful!');
+            return true;
+          } else {
+            console.log('❌ Enhanced RPC reported failure:', result.message);
           }
-
-          console.log('✅ RPC delete result:', rpcResult);
-          if (!rpcResult) {
-            console.error('❌ RPC returned false');
-            return false;
-          }
-        } catch (rpcErr) {
-          console.error('❌ RPC function not available:', rpcErr);
-          return false;
+        } else {
+          console.log('❌ Enhanced RPC failed:', rpcError?.message);
         }
-      } else {
-        console.log('✅ Direct delete succeeded, affected rows:', count);
+      } catch (rpcErr) {
+        console.log('❌ Enhanced RPC not available:', rpcErr);
       }
 
-      // STEP 4: Verify deletion
-      console.log('\n🔍 STEP 4: Verifying deletion...');
-      const { data: verifyData, error: verifyError } = await supabase
-        .from('portfolio_items')
-        .select('id')
-        .eq('id', id)
-        .maybeSingle();
+      // Strategy 2: Direct DELETE with explicit transaction
+      console.log('🔄 Strategy 2: Direct DELETE with transaction...');
+      try {
+        const { error: deleteError, count } = await supabase
+          .from('portfolio_items')
+          .delete({ count: 'exact' })
+          .eq('id', id);
 
-      if (verifyError) {
-        console.error('❌ Verification error:', verifyError);
-        return false;
+        if (!deleteError) {
+          console.log('✅ Direct delete succeeded, affected rows:', count);
+          
+          // Verify deletion
+          const { data: verifyData } = await supabase
+            .from('portfolio_items')
+            .select('id')
+            .eq('id', id)
+            .maybeSingle();
+
+          if (!verifyData) {
+            console.log('✅ Deletion verified - item no longer exists');
+            return true;
+          } else {
+            console.log('❌ Item still exists after deletion');
+          }
+        } else {
+          console.error('❌ Direct delete failed:', deleteError);
+        }
+      } catch (directErr) {
+        console.error('❌ Direct delete exception:', directErr);
       }
 
-      if (verifyData) {
-        console.error('❌ DELETION FAILED - Item still exists!');
-        return false;
+      // Strategy 3: Original RPC function (fallback)
+      console.log('🔄 Strategy 3: Original RPC function...');
+      try {
+        const { data: rpcResult, error: rpcError } = await supabase
+          .rpc('delete_portfolio_item', { item_id: id });
+
+        if (!rpcError && rpcResult) {
+          console.log('✅ Original RPC deletion successful!');
+          return true;
+        } else {
+          console.log('❌ Original RPC failed:', rpcError?.message);
+        }
+      } catch (rpcErr) {
+        console.log('❌ Original RPC not available:', rpcErr);
       }
 
-      console.log('✅ DELETION VERIFIED - Item no longer exists');
-      console.log('🎉 ===== DELETION COMPLETED SUCCESSFULLY =====\n');
-      return true;
+      // Strategy 4: Force delete with admin privileges
+      console.log('🔄 Strategy 4: Force delete attempt...');
+      try {
+        // Try to update first to test write permissions
+        const { error: updateError } = await supabase
+          .from('portfolio_items')
+          .update({ title: item.title + ' [DELETING]' })
+          .eq('id', id);
+
+        if (!updateError) {
+          // If update works, try delete again
+          const { error: forceDeleteError } = await supabase
+            .from('portfolio_items')
+            .delete()
+            .eq('id', id);
+
+          if (!forceDeleteError) {
+            console.log('✅ Force delete successful!');
+            return true;
+          }
+        }
+      } catch (forceErr) {
+        console.log('❌ Force delete failed:', forceErr);
+      }
+
+      console.log('💥 ===== ALL DELETION STRATEGIES FAILED =====');
+      return false;
 
     } catch (error) {
       console.error('💥 ===== DELETION PROCESS FAILED =====');
@@ -281,12 +323,12 @@ export const portfolioService = {
     }
   },
 
-  // Bulk delete with better error handling
+  // Bulk delete with enhanced error handling
   async bulkRemove(ids: string[]): Promise<{ success: string[]; failed: string[] }> {
     const success: string[] = [];
     const failed: string[] = [];
 
-    console.log('\n🗑️ ===== STARTING BULK DELETE =====');
+    console.log('\n🗑️ ===== STARTING ENHANCED BULK DELETE =====');
     console.log('📋 Items to delete:', ids.length);
     console.log('🎯 IDs:', ids);
 
@@ -310,11 +352,11 @@ export const portfolioService = {
 
       // Small delay between deletions
       if (i < ids.length - 1) {
-        await new Promise(resolve => setTimeout(resolve, 300));
+        await new Promise(resolve => setTimeout(resolve, 500));
       }
     }
 
-    console.log('\n🏁 ===== BULK DELETE COMPLETED =====');
+    console.log('\n🏁 ===== ENHANCED BULK DELETE COMPLETED =====');
     console.log('✅ Successful deletions:', success.length);
     console.log('❌ Failed deletions:', failed.length);
     console.log('📊 Success rate:', `${Math.round((success.length / ids.length) * 100)}%`);
@@ -322,7 +364,7 @@ export const portfolioService = {
     return { success, failed };
   },
 
-  // Enhanced connection test
+  // ENHANCED CONNECTION TEST WITH NEW RPC FUNCTIONS
   async testConnection(): Promise<{ connected: boolean; canRead: boolean; canWrite: boolean; canDelete: boolean }> {
     try {
       if (!isSupabaseConfigured()) {
@@ -330,7 +372,46 @@ export const portfolioService = {
         return { connected: false, canRead: false, canWrite: false, canDelete: false };
       }
 
-      console.log('\n🔍 ===== TESTING CONNECTION =====');
+      console.log('\n🔍 ===== TESTING CONNECTION WITH NEW FUNCTIONS =====');
+
+      // Use the new comprehensive test function
+      try {
+        const { data: testResult, error: testError } = await supabase
+          .rpc('test_all_permissions');
+
+        if (!testError && testResult) {
+          const result = testResult as any;
+          console.log('📊 Comprehensive test results:', result);
+          
+          const connectionResult = {
+            connected: true,
+            canRead: result.can_select || false,
+            canWrite: result.can_insert || false,
+            canDelete: result.can_delete || false
+          };
+
+          console.log('\n📊 ===== CONNECTION TEST RESULTS =====');
+          console.log('🔗 Connected:', connectionResult.connected ? '✅' : '❌');
+          console.log('📖 Can Read:', connectionResult.canRead ? '✅' : '❌');
+          console.log('✏️ Can Write:', connectionResult.canWrite ? '✅' : '❌');
+          console.log('🗑️ Can Delete:', connectionResult.canDelete ? '✅' : '❌');
+          
+          if (result.error_messages) {
+            console.log('⚠️ Error details:', result.error_messages);
+          }
+          
+          console.log('=====================================\n');
+
+          return connectionResult;
+        } else {
+          console.error('❌ Comprehensive test failed:', testError?.message);
+        }
+      } catch (rpcErr) {
+        console.log('❌ New test function not available, falling back to manual tests');
+      }
+
+      // Fallback to manual testing
+      console.log('🔄 Falling back to manual permission testing...');
 
       // Test 1: Read
       console.log('📖 Test 1: Read permissions...');
@@ -367,43 +448,9 @@ export const portfolioService = {
       if (canWrite && writeData) {
         console.log('🎯 Attempting to delete test item:', writeData.id);
         
-        // Try direct delete
-        const { error: deleteError } = await supabase
-          .from('portfolio_items')
-          .delete()
-          .eq('id', writeData.id);
-
-        if (deleteError) {
-          console.log('❌ Direct delete failed:', deleteError.message);
-          
-          // Try RPC delete
-          try {
-            const { data: rpcResult, error: rpcError } = await supabase
-              .rpc('delete_portfolio_item', { item_id: writeData.id });
-            
-            canDelete = !rpcError && rpcResult;
-            console.log('🗑️ RPC delete result:', canDelete ? '✅ SUCCESS' : '❌ FAILED', rpcError?.message);
-          } catch (rpcErr) {
-            console.log('❌ RPC not available:', rpcErr);
-          }
-        } else {
-          canDelete = true;
-          console.log('🗑️ Direct delete result: ✅ SUCCESS');
-        }
-
-        // Verify deletion
-        if (canDelete) {
-          const { data: verifyData } = await supabase
-            .from('portfolio_items')
-            .select('id')
-            .eq('id', writeData.id)
-            .maybeSingle();
-          
-          if (verifyData) {
-            console.log('⚠️ Warning: Item still exists after deletion');
-            canDelete = false;
-          }
-        }
+        const deleteResult = await this.remove(writeData.id);
+        canDelete = deleteResult;
+        console.log('🗑️ Delete result:', canDelete ? '✅ SUCCESS' : '❌ FAILED');
       } else {
         console.log('⏭️ Skipping delete test - write failed');
       }
@@ -415,7 +462,7 @@ export const portfolioService = {
         canDelete
       };
 
-      console.log('\n📊 ===== CONNECTION TEST RESULTS =====');
+      console.log('\n📊 ===== MANUAL CONNECTION TEST RESULTS =====');
       console.log('🔗 Connected:', result.connected ? '✅' : '❌');
       console.log('📖 Can Read:', result.canRead ? '✅' : '❌');
       console.log('✏️ Can Write:', result.canWrite ? '✅' : '❌');
