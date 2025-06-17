@@ -19,7 +19,9 @@ import {
   Database,
   Code,
   Wifi,
-  WifiOff
+  WifiOff,
+  Zap,
+  Bug
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { portfolioService } from '../utils/portfolioService';
@@ -30,7 +32,7 @@ import { getDefaultWorkItems } from '../data/works';
 interface AdminPortfolioItem extends PortfolioItem {
   isHidden?: boolean;
   isSelected?: boolean;
-  source?: 'database' | 'code'; // Track where the item comes from
+  source?: 'database' | 'code';
 }
 
 const Admin: React.FC = () => {
@@ -51,16 +53,15 @@ const Admin: React.FC = () => {
   const [sourceFilter, setSourceFilter] = useState<'all' | 'database' | 'code'>('all');
   const [deleteProgress, setDeleteProgress] = useState<{ current: number; total: number } | null>(null);
   const [connectionStatus, setConnectionStatus] = useState<{ connected: boolean; canRead: boolean; canWrite: boolean; canDelete: boolean } | null>(null);
+  const [forceRefreshing, setForceRefreshing] = useState(false);
+  const [debugMode, setDebugMode] = useState(false);
 
   const ADMIN_PASSWORD = 'VASACHA';
   const supabaseConfigured = isSupabaseConfigured();
 
   // Function to trigger portfolio refresh across the app
   const triggerPortfolioRefresh = () => {
-    // Trigger custom event for other components
     window.dispatchEvent(new CustomEvent('portfolio-updated'));
-    
-    // Also use localStorage to trigger refresh in other tabs
     localStorage.setItem('portfolio_refresh', Date.now().toString());
     setTimeout(() => {
       localStorage.removeItem('portfolio_refresh');
@@ -77,6 +78,63 @@ const Admin: React.FC = () => {
       console.error('Error testing connection:', error);
       setConnectionStatus({ connected: false, canRead: false, canWrite: false, canDelete: false });
       return { connected: false, canRead: false, canWrite: false, canDelete: false };
+    }
+  };
+
+  // Force refresh with cache clearing
+  const forceRefresh = async () => {
+    setForceRefreshing(true);
+    try {
+      console.log('🔄 Force refreshing portfolio data...');
+      
+      // Clear all caches
+      localStorage.removeItem('portfolio_refresh');
+      
+      // Test connection first
+      await testConnection();
+
+      // Get fresh data from database
+      const databaseItems = await portfolioService.forceRefresh();
+      const adminDatabaseItems: AdminPortfolioItem[] = databaseItems.map(item => ({
+        ...item,
+        isHidden: false,
+        isSelected: false,
+        source: 'database' as const
+      }));
+
+      // Get default items from code
+      const defaultItems = getDefaultWorkItems();
+      const adminCodeItems: AdminPortfolioItem[] = defaultItems.map(item => ({
+        id: item.id,
+        title: item.title,
+        category: item.category,
+        description: `Default portfolio item - ${item.category}`,
+        youtube_url: item.youtubeUrl,
+        cloudinary_url: undefined,
+        thumbnail: item.thumbnail,
+        views: item.views,
+        upload_type: 'link' as const,
+        created_at: '2024-01-01T00:00:00Z',
+        updated_at: '2024-01-01T00:00:00Z',
+        isHidden: false,
+        isSelected: false,
+        source: 'code' as const
+      }));
+
+      // Combine both sources
+      const allItems = [...adminDatabaseItems, ...adminCodeItems];
+      setItems(allItems);
+      setFilteredItems(allItems);
+      
+      // Trigger refresh across app
+      triggerPortfolioRefresh();
+      
+      showNotification('success', `Refreshed! Found ${adminDatabaseItems.length} database items and ${adminCodeItems.length} code items`);
+    } catch (error) {
+      console.error('Error in force refresh:', error);
+      showNotification('error', 'Failed to refresh portfolio data');
+    } finally {
+      setForceRefreshing(false);
     }
   };
 
@@ -108,7 +166,7 @@ const Admin: React.FC = () => {
         thumbnail: item.thumbnail,
         views: item.views,
         upload_type: 'link' as const,
-        created_at: '2024-01-01T00:00:00Z', // Default date for code items
+        created_at: '2024-01-01T00:00:00Z',
         updated_at: '2024-01-01T00:00:00Z',
         isHidden: false,
         isSelected: false,
@@ -191,19 +249,25 @@ const Admin: React.FC = () => {
       }
 
       if (databaseItemIds.length > 0) {
-        console.log('Attempting to delete database items:', databaseItemIds);
+        console.log('🗑️ Starting deletion process for database items:', databaseItemIds);
         
         // Use bulk delete for better performance and progress tracking
         const result = await portfolioService.bulkRemove(databaseItemIds);
         
-        console.log('Bulk delete result:', result);
+        console.log('🗑️ Bulk delete completed:', result);
         
         if (result.success.length > 0) {
+          // Remove successfully deleted items from state
           setItems(prev => prev.filter(item => !result.success.includes(item.id)));
           showNotification('success', `Successfully deleted ${result.success.length} item(s)`);
           
           // Trigger portfolio refresh across the app
           triggerPortfolioRefresh();
+          
+          // Force refresh to ensure UI is in sync
+          setTimeout(() => {
+            forceRefresh();
+          }, 1000);
         }
 
         if (result.failed.length > 0) {
@@ -383,7 +447,7 @@ const Admin: React.FC = () => {
                   )}
                   <span>
                     {connectionStatus.connected 
-                      ? `Connected (R:${connectionStatus.canRead ? '✓' : '✗'} W:${connectionStatus.canWrite ? '✓' : '✗'} D:${connectionStatus.canDelete ? '✓' : '✗'})` 
+                      ? `Connected (R:${connectionStatus.canRead ? '✅' : '❌'} W:${connectionStatus.canWrite ? '✅' : '❌'} D:${connectionStatus.canDelete ? '✅' : '❌'})` 
                       : 'Disconnected'
                     }
                   </span>
@@ -393,11 +457,26 @@ const Admin: React.FC = () => {
 
             <div className="flex items-center space-x-3">
               <button
+                onClick={() => setDebugMode(!debugMode)}
+                className={`btn-outline px-4 py-2 text-sm flex items-center space-x-2 ${debugMode ? 'bg-primary/20' : ''}`}
+              >
+                <Bug className="h-4 w-4" />
+                <span>Debug</span>
+              </button>
+              <button
                 onClick={testConnection}
                 className="btn-outline px-4 py-2 text-sm flex items-center space-x-2"
               >
                 <Wifi className="h-4 w-4" />
                 <span>Test Connection</span>
+              </button>
+              <button
+                onClick={forceRefresh}
+                disabled={forceRefreshing}
+                className="btn-outline px-4 py-2 text-sm flex items-center space-x-2"
+              >
+                <Zap className={`h-4 w-4 ${forceRefreshing ? 'animate-pulse' : ''}`} />
+                <span>Force Refresh</span>
               </button>
               <button
                 onClick={exportData}
@@ -450,6 +529,21 @@ const Admin: React.FC = () => {
       </AnimatePresence>
 
       <div className="container mx-auto px-4 py-8">
+        {/* Debug Info */}
+        {debugMode && (
+          <div className="bg-gray-900 border border-gray-700 rounded-lg p-4 mb-6 text-xs font-mono">
+            <h3 className="text-yellow-400 font-bold mb-2">🐛 DEBUG INFO</h3>
+            <div className="space-y-1">
+              <div>Supabase Configured: {supabaseConfigured ? '✅' : '❌'}</div>
+              <div>Total Items: {items.length}</div>
+              <div>Database Items: {databaseCount}</div>
+              <div>Code Items: {codeCount}</div>
+              <div>Selected Items: {selectedItems.size}</div>
+              <div>Connection Status: {connectionStatus ? JSON.stringify(connectionStatus) : 'Not tested'}</div>
+            </div>
+          </div>
+        )}
+
         {/* Supabase Warning */}
         {!supabaseConfigured && (
           <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-4 mb-6 flex items-start space-x-3">
@@ -468,9 +562,11 @@ const Admin: React.FC = () => {
           <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4 mb-6 flex items-start space-x-3">
             <AlertCircle className="h-5 w-5 text-red-500 mt-0.5 flex-shrink-0" />
             <div>
-              <h3 className="text-red-500 font-medium mb-1">Delete Permission Issue</h3>
+              <h3 className="text-red-500 font-medium mb-1">🚨 DELETE PERMISSION ISSUE</h3>
               <p className="text-sm text-red-200">
                 Cannot delete items from database. Check your RLS policies and permissions.
+                <br />
+                <strong>This is why items are not being deleted!</strong>
               </p>
             </div>
           </div>
@@ -740,7 +836,7 @@ const Admin: React.FC = () => {
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.9, opacity: 0 }}
               >
-                <h3 className="text-xl font-bold mb-4">Confirm Deletion</h3>
+                <h3 className="text-xl font-bold mb-4">🗑️ Confirm Deletion</h3>
                 <p className="text-gray-medium mb-6">
                   Are you sure you want to delete {selectedItems.size} item(s)? This action cannot be undone.
                   {Array.from(selectedItems).some(id => items.find(i => i.id === id)?.source === 'code') && (
@@ -782,7 +878,7 @@ const Admin: React.FC = () => {
                     {actionLoading ? (
                       <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                     ) : (
-                      'Delete'
+                      '🗑️ Delete'
                     )}
                   </button>
                 </div>
