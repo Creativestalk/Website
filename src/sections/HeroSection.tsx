@@ -31,7 +31,7 @@ const HeroSection: React.FC = () => {
   };
 
   return (
-    <section id="home" className="relative min-h-screen flex flex-col justify-center pt-20 pb-10">
+    <section id="home" className="relative min-h-screen flex flex-col justify-center pt-32 pb-10">
       <div className="container mx-auto px-4 md:px-6">
         <motion.div 
           className="flex flex-col items-center text-center mb-10"

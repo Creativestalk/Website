@@ -15,7 +15,7 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 100px;
+  scroll-padding-top: 120px;
 }
 
 body {
@@ -26,14 +26,6 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Poppins', sans-serif;
-}
-
-.section-divider {
-  width: 100%;
-  height: 1px;
-  background-image: repeating-linear-gradient(to right, #F5A623 0, #F5A623 4px, transparent 4px, transparent 8px);
-  opacity: 0.3;
-  margin: 2rem 0;
 }
 
 .highlight-orange {
@@ -50,15 +42,6 @@ h1, h2, h3, h4, h5, h6 {
 
 .btn-outline {
   @apply border border-[#FFA500] text-[#FFA500] font-medium py-3 px-6 rounded-md transition-all duration-300 hover:bg-[#FFA500] hover:bg-opacity-10 hover:shadow-[0_0_15px_rgba(255,165,0,0.25)];
-}
-
-.navbar-floating {
-  @apply fixed top-0 left-0 right-0 w-full z-50 backdrop-blur-md bg-dark/60 border-b border-white/10;
-  transition: all 0.3s ease-in-out;
-}
-
-.navbar-inner {
-  @apply max-w-7xl mx-auto px-4 py-4 md:py-5;
 }
 
 .nav-link {
@@ -398,4 +381,29 @@ h1, h2, h3, h4, h5, h6 {
   50% {
     box-shadow: 0 0 20px rgba(255, 165, 0, 0.6);
   }
+}
+
+/* Marquee Banner Styles */
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.marquee {
+  animation: marquee 30s linear infinite;
+}
+
+/* Smooth scrolling for marquee */
+.marquee-container {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.marquee-content {
+  display: inline-block;
+  animation: marquee 30s linear infinite;
 }

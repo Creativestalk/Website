@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 import Navbar from './components/Navbar';
 import HeroSection from './sections/HeroSection';
+import MarqueeBanner from './components/MarqueeBanner';
 import ServicesSection from './sections/ServicesSection';
 import WorksSection from './sections/WorksSection';
 import ContactSection from './sections/ContactSection';
@@ -90,11 +91,10 @@ function App() {
           <Navbar />
           <main>
             <HeroSection />
-            <div className="section-divider mx-auto max-w-7xl px-4" />
+            <MarqueeBanner />
             <ServicesSection />
-            <div className="section-divider mx-auto max-w-7xl px-4" />
+            <MarqueeBanner />
             <WorksSection onNavigateToPortfolio={navigateToPortfolio} />
-            <div className="section-divider mx-auto max-w-7xl px-4" />
             <ContactSection />
           </main>
           <Footer />

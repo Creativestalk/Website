@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, ArrowUpRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { navItems } from '../data/navItems';
 import Logo from './Logo';
@@ -77,13 +77,19 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="navbar-floating">
-      <div className="navbar-inner">
+    <nav className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-5xl px-4">
+      <motion.div 
+        className="bg-black/80 backdrop-blur-xl border border-white/10 rounded-full px-8 py-4 shadow-2xl"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
         <div className="flex items-center justify-between">
+          {/* Logo - Left Side */}
           <motion.a 
             href="#home" 
             onClick={(e) => handleNavClick(e, 'home')}
-            className="flex items-center space-x-2 group"
+            className="flex items-center group flex-shrink-0"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -93,50 +99,85 @@ const Navbar: React.FC = () => {
                 transition: { duration: 0.5 }
               }}
             >
-              <Logo className="h-6 w-6 text-primary transition-all duration-300 group-hover:glow-effect" />
+              <Logo className="h-8 w-8" />
             </motion.div>
-            <AnimatedText
-              text="Creativestalk"
-              className="text-base font-heading font-bold bg-gradient-to-r from-primary to-white bg-clip-text text-transparent"
-              type="chars"
-              stagger={0.05}
-              once={false}
-            />
           </motion.a>
 
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-8">
-            {navItems.map((item, index) => (
+          {/* Desktop Menu - Centered Navigation Items */}
+          <div className="hidden md:flex items-center justify-center flex-1">
+            <div className="flex items-center space-x-10">
               <motion.a 
-                key={item.id}
-                href={`#${item.id}`}
-                onClick={(e) => handleNavClick(e, item.id)}
-                className={`nav-link ${activeSection === item.id ? 'text-primary' : 'text-gray-light hover:text-primary'}`}
+                href="#about"
+                onClick={(e) => handleNavClick(e, 'home')}
+                className="text-gray-300 hover:text-white transition-colors duration-300 text-sm font-medium relative group"
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1, duration: 0.3 }}
-                whileHover={{ 
-                  y: -2,
-                  transition: { type: "spring", stiffness: 400, damping: 10 }
-                }}
+                transition={{ delay: 0.1, duration: 0.3 }}
+                whileHover={{ y: -2 }}
               >
-                {item.label}
+                Why Us
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
               </motion.a>
-            ))}
+              
+              {navItems.filter(item => item.id === 'services').map((item, index) => (
+                <motion.a 
+                  key={item.id}
+                  href={`#${item.id}`}
+                  onClick={(e) => handleNavClick(e, item.id)}
+                  className={`text-sm font-medium transition-colors duration-300 relative group ${
+                    activeSection === item.id ? 'text-white' : 'text-gray-300 hover:text-white'
+                  }`}
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2, duration: 0.3 }}
+                  whileHover={{ y: -2 }}
+                >
+                  Services
+                  <span className={`absolute -bottom-1 left-0 h-0.5 bg-primary transition-all duration-300 ${
+                    activeSection === item.id ? 'w-full' : 'w-0 group-hover:w-full'
+                  }`}></span>
+                </motion.a>
+              ))}
+              
+              {navItems.filter(item => item.id === 'works').map((item, index) => (
+                <motion.a 
+                  key={item.id}
+                  href={`#${item.id}`}
+                  onClick={(e) => handleNavClick(e, item.id)}
+                  className={`text-sm font-medium transition-colors duration-300 relative group ${
+                    activeSection === item.id ? 'text-white' : 'text-gray-300 hover:text-white'
+                  }`}
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3, duration: 0.3 }}
+                  whileHover={{ y: -2 }}
+                >
+                  Works
+                  <span className={`absolute -bottom-1 left-0 h-0.5 bg-primary transition-all duration-300 ${
+                    activeSection === item.id ? 'w-full' : 'w-0 group-hover:w-full'
+                  }`}></span>
+                </motion.a>
+              ))}
+            </div>
+          </div>
+
+          {/* Let's Talk Button - Right Side */}
+          <div className="hidden md:flex flex-shrink-0">
             <motion.a 
               href="#contact"
               onClick={(e) => handleNavClick(e, 'contact')}
-              className={`btn-primary text-sm px-6 py-2.5 ${activeSection === 'contact' ? 'bg-opacity-90' : ''}`}
+              className="bg-primary hover:bg-primary/90 text-black font-medium px-6 py-2.5 rounded-full flex items-center space-x-2 transition-all duration-300 hover:shadow-lg hover:shadow-primary/25"
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.5, duration: 0.3 }}
+              transition={{ delay: 0.4, duration: 0.3 }}
               whileHover={{ 
                 scale: 1.05,
                 boxShadow: "0 0 20px rgba(255, 165, 0, 0.4)"
               }}
               whileTap={{ scale: 0.95 }}
             >
-              Let's Talk
+              <span>Let's Talk</span>
+              <ArrowUpRight className="h-4 w-4" />
             </motion.a>
           </div>
 
@@ -177,48 +218,60 @@ const Navbar: React.FC = () => {
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.div
-              className="md:hidden mt-4 py-2 backdrop-blur-lg bg-dark/80 rounded-lg overflow-hidden"
+              className="md:hidden mt-4 py-4 border-t border-white/10"
               variants={menuVariants}
               initial="closed"
               animate="open"
               exit="closed"
             >
-              {navItems.map((item, index) => (
+              <div className="flex flex-col space-y-4">
                 <motion.a 
-                  key={item.id}
-                  href={`#${item.id}`}
-                  onClick={(e) => handleNavClick(e, item.id)}
-                  className={`block py-2.5 px-4 transition-colors duration-300 text-sm ${
-                    activeSection === item.id 
-                      ? 'text-primary bg-white/5' 
-                      : 'text-gray-light hover:text-primary hover:bg-white/5'
-                  }`}
+                  href="#about"
+                  onClick={(e) => handleNavClick(e, 'home')}
+                  className="text-gray-300 hover:text-white transition-colors duration-300 text-sm font-medium py-2"
                   variants={menuItemVariants}
                   whileHover={{ x: 10 }}
                 >
-                  {item.label}
+                  Why Us
                 </motion.a>
-              ))}
-              <motion.div 
-                className="px-4 pt-2 pb-2"
-                variants={menuItemVariants}
-              >
-                <motion.a 
-                  href="#contact"
-                  onClick={(e) => handleNavClick(e, 'contact')}
-                  className={`block w-full text-center btn-primary text-sm py-2.5 ${
-                    activeSection === 'contact' ? 'bg-opacity-90' : ''
-                  }`}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                
+                {navItems.map((item, index) => (
+                  <motion.a 
+                    key={item.id}
+                    href={`#${item.id}`}
+                    onClick={(e) => handleNavClick(e, item.id)}
+                    className={`text-sm font-medium transition-colors duration-300 py-2 ${
+                      activeSection === item.id 
+                        ? 'text-white' 
+                        : 'text-gray-300 hover:text-white'
+                    }`}
+                    variants={menuItemVariants}
+                    whileHover={{ x: 10 }}
+                  >
+                    {item.label}
+                  </motion.a>
+                ))}
+                
+                <motion.div 
+                  className="pt-2"
+                  variants={menuItemVariants}
                 >
-                  Let's Talk
-                </motion.a>
-              </motion.div>
+                  <motion.a 
+                    href="#contact"
+                    onClick={(e) => handleNavClick(e, 'contact')}
+                    className="bg-primary hover:bg-primary/90 text-black font-medium px-6 py-2.5 rounded-full flex items-center justify-center space-x-2 transition-all duration-300"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <span>Let's Talk</span>
+                    <ArrowUpRight className="h-4 w-4" />
+                  </motion.a>
+                </motion.div>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
+      </motion.div>
     </nav>
   );
 };
