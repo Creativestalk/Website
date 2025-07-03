@@ -15,6 +15,28 @@ export interface CreatePortfolioItem {
 const CLOUDINARY_CLOUD_NAME = 'dbthy4lg2';
 const CLOUDINARY_UPLOAD_PRESET = 'WEBSITE';
 
+// Helper function to check if an item is a test item
+const isTestItem = (item: PortfolioItem): boolean => {
+  const testPatterns = [
+    /test/i,
+    /\[deleting\]/i,
+    /deletion/i,
+    /permission/i,
+    /🧪/,
+    /🗑️/,
+    /TEST/,
+    /DELETING/,
+    /DELETION/,
+    /PERMISSION/
+  ];
+  
+  return testPatterns.some(pattern => 
+    pattern.test(item.title) || 
+    pattern.test(item.category) || 
+    pattern.test(item.description || '')
+  );
+};
+
 // Helper function to extract public ID from Cloudinary URL
 const extractCloudinaryPublicId = (url: string): string | null => {
   try {
@@ -83,7 +105,7 @@ const deleteFromCloudinary = async (publicId: string): Promise<boolean> => {
 };
 
 export const portfolioService = {
-  // Get all portfolio items
+  // Get all portfolio items (excluding test items)
   async getAll(): Promise<PortfolioItem[]> {
     try {
       if (!isSupabaseConfigured()) {
@@ -92,6 +114,10 @@ export const portfolioService = {
       }
 
       console.log('📖 Fetching all portfolio items...');
+      
+      // First, clean up any test items
+      await this.cleanupTestItems();
+      
       const { data, error } = await supabase
         .from('portfolio_items')
         .select('*')
@@ -102,8 +128,11 @@ export const portfolioService = {
         return [];
       }
 
-      console.log(`✅ Fetched ${data?.length || 0} portfolio items`);
-      return data || [];
+      // Filter out any remaining test items on the client side
+      const filteredData = (data || []).filter(item => !isTestItem(item));
+      
+      console.log(`✅ Fetched ${filteredData.length} portfolio items (filtered ${(data?.length || 0) - filteredData.length} test items)`);
+      return filteredData;
     } catch (error) {
       console.error('💥 Error in getAll:', error);
       return [];
@@ -115,6 +144,11 @@ export const portfolioService = {
     try {
       if (!isSupabaseConfigured()) {
         throw new Error('Supabase not configured. Please set up your Supabase connection.');
+      }
+
+      // Prevent adding test items
+      if (isTestItem(item as any)) {
+        throw new Error('Cannot add test items to portfolio');
       }
 
       console.log('➕ Adding new portfolio item:', item.title);
@@ -134,6 +168,52 @@ export const portfolioService = {
     } catch (error) {
       console.error('💥 Error in add:', error);
       throw error;
+    }
+  },
+
+  // Clean up test items
+  async cleanupTestItems(): Promise<number> {
+    try {
+      if (!isSupabaseConfigured()) {
+        return 0;
+      }
+
+      console.log('🧹 Cleaning up test items...');
+      
+      // Delete items with test patterns in title, category, or description
+      const { data: testItems, error: fetchError } = await supabase
+        .from('portfolio_items')
+        .select('*')
+        .or(`title.ilike.%test%,title.ilike.%deleting%,title.ilike.%deletion%,title.ilike.%permission%,category.eq.test,description.ilike.%test%`);
+
+      if (fetchError) {
+        console.error('❌ Error fetching test items:', fetchError);
+        return 0;
+      }
+
+      if (!testItems || testItems.length === 0) {
+        console.log('✅ No test items found to clean up');
+        return 0;
+      }
+
+      console.log(`🗑️ Found ${testItems.length} test items to clean up`);
+
+      // Delete test items
+      const { error: deleteError } = await supabase
+        .from('portfolio_items')
+        .delete()
+        .or(`title.ilike.%test%,title.ilike.%deleting%,title.ilike.%deletion%,title.ilike.%permission%,category.eq.test,description.ilike.%test%`);
+
+      if (deleteError) {
+        console.error('❌ Error deleting test items:', deleteError);
+        return 0;
+      }
+
+      console.log(`✅ Cleaned up ${testItems.length} test items`);
+      return testItems.length;
+    } catch (error) {
+      console.error('💥 Error in cleanupTestItems:', error);
+      return 0;
     }
   },
 
@@ -321,6 +401,9 @@ export const portfolioService = {
 
       console.log('\n🔍 ===== TESTING CONNECTION WITH BULLETPROOF FUNCTIONS =====');
 
+      // Clean up test items first
+      await this.cleanupTestItems();
+
       // Use the new bulletproof test function
       try {
         const { data: testResult, error: testError } = await supabase
@@ -390,7 +473,7 @@ export const portfolioService = {
     }
   },
 
-  // Force refresh with cache clearing
+  // Force refresh with cache clearing and test cleanup
   async forceRefresh(): Promise<PortfolioItem[]> {
     try {
       console.log('🔄 Force refreshing portfolio data...');
@@ -404,12 +487,8 @@ export const portfolioService = {
         });
       }
 
-      // Clean up any test items first
-      try {
-        await supabase.rpc('cleanup_test_items');
-      } catch (cleanupErr) {
-        console.log('⚠️ Cleanup function not available');
-      }
+      // Clean up test items first
+      await this.cleanupTestItems();
 
       // Get fresh data
       const items = await this.getAll();
