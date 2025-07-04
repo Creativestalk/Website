@@ -77,9 +77,9 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-5xl px-4">
+    <nav className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-5xl px-4">
       <motion.div 
-        className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-full px-8 py-4 shadow-2xl"
+        className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-full px-6 py-2.5 shadow-2xl"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
@@ -99,13 +99,13 @@ const Navbar: React.FC = () => {
                 transition: { duration: 0.5 }
               }}
             >
-              <Logo className="h-8 w-8" />
+              <Logo className="h-7 w-7" />
             </motion.div>
           </motion.a>
 
           {/* Desktop Menu - Centered Navigation Items */}
           <div className="hidden md:flex items-center justify-center flex-1">
-            <div className="flex items-center space-x-10">
+            <div className="flex items-center space-x-8">
               <motion.a 
                 href="#about"
                 onClick={(e) => handleNavClick(e, 'home')}
@@ -166,7 +166,7 @@ const Navbar: React.FC = () => {
             <motion.a 
               href="#contact"
               onClick={(e) => handleNavClick(e, 'contact')}
-              className="bg-primary hover:bg-primary/90 text-black font-medium px-6 py-2.5 rounded-full flex items-center space-x-2 transition-all duration-300 hover:shadow-lg hover:shadow-primary/25"
+              className="bg-primary hover:bg-primary/90 text-black font-medium px-5 py-2 rounded-full flex items-center space-x-2 transition-all duration-300 hover:shadow-lg hover:shadow-primary/25"
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.4, duration: 0.3 }}
@@ -218,17 +218,17 @@ const Navbar: React.FC = () => {
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.div
-              className="md:hidden mt-4 py-4 border-t border-white/20"
+              className="md:hidden mt-3 py-3 border-t border-white/20"
               variants={menuVariants}
               initial="closed"
               animate="open"
               exit="closed"
             >
-              <div className="flex flex-col space-y-4">
+              <div className="flex flex-col space-y-3">
                 <motion.a 
                   href="#about"
                   onClick={(e) => handleNavClick(e, 'home')}
-                  className="text-white/90 hover:text-white transition-colors duration-300 text-sm font-medium py-2"
+                  className="text-white/90 hover:text-white transition-colors duration-300 text-sm font-medium py-1.5"
                   variants={menuItemVariants}
                   whileHover={{ x: 10 }}
                 >
@@ -240,7 +240,7 @@ const Navbar: React.FC = () => {
                     key={item.id}
                     href={`#${item.id}`}
                     onClick={(e) => handleNavClick(e, item.id)}
-                    className={`text-sm font-medium transition-colors duration-300 py-2 ${
+                    className={`text-sm font-medium transition-colors duration-300 py-1.5 ${
                       activeSection === item.id 
                         ? 'text-white' 
                         : 'text-white/90 hover:text-white'
@@ -259,7 +259,7 @@ const Navbar: React.FC = () => {
                   <motion.a 
                     href="#contact"
                     onClick={(e) => handleNavClick(e, 'contact')}
-                    className="bg-primary hover:bg-primary/90 text-black font-medium px-6 py-2.5 rounded-full flex items-center justify-center space-x-2 transition-all duration-300"
+                    className="bg-primary hover:bg-primary/90 text-black font-medium px-5 py-2 rounded-full flex items-center justify-center space-x-2 transition-all duration-300"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >

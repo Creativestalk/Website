@@ -71,20 +71,23 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, index }) => {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3 }}
-              className="overflow-hidden"
+              transition={{ 
+                duration: 0.4,
+                ease: [0.25, 0.46, 0.45, 0.94]
+              }}
+              className="overflow-hidden w-full"
             >
               <div className="grid grid-cols-1 gap-2">
                 {service.subservices.map((subservice, idx) => (
                   <motion.div
                     key={idx}
-                    initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                    initial={{ opacity: 0, y: 15, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -10, scale: 0.95 }}
                     transition={{ 
-                      delay: idx * 0.05,
-                      type: "spring",
-                      stiffness: 200,
-                      damping: 20
+                      delay: idx * 0.08,
+                      duration: 0.4,
+                      ease: [0.25, 0.46, 0.45, 0.94]
                     }}
                     className="service-feature"
                     whileHover={{ 
@@ -93,13 +96,16 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, index }) => {
                       transition: { type: "spring", stiffness: 400, damping: 10 }
                     }}
                   >
-                    <AnimatedText
-                      text={subservice}
-                      className=""
-                      type="chars"
-                      stagger={0.01}
-                      delay={idx * 0.05}
-                    />
+                    <motion.span
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ 
+                        delay: idx * 0.08 + 0.1,
+                        duration: 0.3
+                      }}
+                    >
+                      {subservice}
+                    </motion.span>
                   </motion.div>
                 ))}
               </div>
