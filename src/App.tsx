@@ -91,9 +91,25 @@ function App() {
           <Navbar />
           <main>
             <HeroSection />
-            <MarqueeBanner />
+            <MarqueeBanner type="services" />
             <ServicesSection />
-            <MarqueeBanner />
+            
+            {/* Client Brands Section */}
+            <div className="bg-dark py-8">
+              <div className="text-center mb-4">
+                <motion.h3 
+                  className="text-white font-bold text-2xl md:text-3xl tracking-wider"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6 }}
+                >
+                  WE WORK FOR
+                </motion.h3>
+              </div>
+              <MarqueeBanner type="clients" />
+            </div>
+            
             <WorksSection onNavigateToPortfolio={navigateToPortfolio} />
             <ContactSection />
           </main>

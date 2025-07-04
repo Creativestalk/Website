@@ -79,7 +79,7 @@ const Navbar: React.FC = () => {
   return (
     <nav className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-5xl px-4">
       <motion.div 
-        className="bg-black/80 backdrop-blur-xl border border-white/10 rounded-full px-8 py-4 shadow-2xl"
+        className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-full px-8 py-4 shadow-2xl"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
@@ -109,7 +109,7 @@ const Navbar: React.FC = () => {
               <motion.a 
                 href="#about"
                 onClick={(e) => handleNavClick(e, 'home')}
-                className="text-gray-300 hover:text-white transition-colors duration-300 text-sm font-medium relative group"
+                className="text-white/90 hover:text-white transition-colors duration-300 text-sm font-medium relative group"
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1, duration: 0.3 }}
@@ -125,7 +125,7 @@ const Navbar: React.FC = () => {
                   href={`#${item.id}`}
                   onClick={(e) => handleNavClick(e, item.id)}
                   className={`text-sm font-medium transition-colors duration-300 relative group ${
-                    activeSection === item.id ? 'text-white' : 'text-gray-300 hover:text-white'
+                    activeSection === item.id ? 'text-white' : 'text-white/90 hover:text-white'
                   }`}
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -145,7 +145,7 @@ const Navbar: React.FC = () => {
                   href={`#${item.id}`}
                   onClick={(e) => handleNavClick(e, item.id)}
                   className={`text-sm font-medium transition-colors duration-300 relative group ${
-                    activeSection === item.id ? 'text-white' : 'text-gray-300 hover:text-white'
+                    activeSection === item.id ? 'text-white' : 'text-white/90 hover:text-white'
                   }`}
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -218,7 +218,7 @@ const Navbar: React.FC = () => {
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.div
-              className="md:hidden mt-4 py-4 border-t border-white/10"
+              className="md:hidden mt-4 py-4 border-t border-white/20"
               variants={menuVariants}
               initial="closed"
               animate="open"
@@ -228,7 +228,7 @@ const Navbar: React.FC = () => {
                 <motion.a 
                   href="#about"
                   onClick={(e) => handleNavClick(e, 'home')}
-                  className="text-gray-300 hover:text-white transition-colors duration-300 text-sm font-medium py-2"
+                  className="text-white/90 hover:text-white transition-colors duration-300 text-sm font-medium py-2"
                   variants={menuItemVariants}
                   whileHover={{ x: 10 }}
                 >
@@ -243,7 +243,7 @@ const Navbar: React.FC = () => {
                     className={`text-sm font-medium transition-colors duration-300 py-2 ${
                       activeSection === item.id 
                         ? 'text-white' 
-                        : 'text-gray-300 hover:text-white'
+                        : 'text-white/90 hover:text-white'
                     }`}
                     variants={menuItemVariants}
                     whileHover={{ x: 10 }}
