@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import ServiceCard from '../components/ServiceCard';
 import AnimatedText from '../components/AnimatedText';
+import StarfieldBackground from '../components/StarfieldBackground';
 import { services } from '../data/services';
 
 const ServicesSection: React.FC = () => {
@@ -31,6 +32,9 @@ const ServicesSection: React.FC = () => {
   return (
     <section id="services" className="py-20 bg-dark relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-dark-lighter to-dark opacity-50"></div>
+      
+      {/* Animated Starfield Background */}
+      <StarfieldBackground density="light" />
       
       <div className="container mx-auto px-4 md:px-6 relative">
         <motion.div 

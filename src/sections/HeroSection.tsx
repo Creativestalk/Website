@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import AnimatedText from '../components/AnimatedText';
 import TypewriterText from '../components/TypewriterText';
+import StarfieldBackground from '../components/StarfieldBackground';
 
 const HeroSection: React.FC = () => {
   const headlineRef = useRef<HTMLHeadingElement>(null);
@@ -53,6 +54,9 @@ const HeroSection: React.FC = () => {
         <div className="absolute inset-0 opacity-[0.015] bg-gradient-to-br from-white via-transparent to-white mix-blend-overlay"></div>
       </div>
 
+      {/* Animated Starfield Background */}
+      <StarfieldBackground density="medium" />
+
       {/* Content */}
       <div className="container mx-auto px-4 md:px-6 relative z-10">
         <motion.div 
@@ -75,7 +79,7 @@ const HeroSection: React.FC = () => {
           
           <motion.div variants={itemVariants}>
             <AnimatedText
-              text="Bringing Your ✦ Vision to Life."
+              text="Inspired by you ✦ Created by us"
               className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold mb-8 leading-tight text-white drop-shadow-lg"
               type="words"
               stagger={0.15}
