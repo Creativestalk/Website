@@ -30,8 +30,8 @@ const ServicesSection: React.FC = () => {
   };
 
   return (
-    <section id="services" className="py-20 bg-dark relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-dark-lighter to-dark opacity-50"></div>
+    <section id="services" className="pt-24 pb-20 bg-dark-card relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-b from-dark-card to-dark opacity-50"></div>
       
       {/* Animated Starfield Background */}
       <StarfieldBackground density="light" />

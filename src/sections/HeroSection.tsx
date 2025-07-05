@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import AnimatedText from '../components/AnimatedText';
 import TypewriterText from '../components/TypewriterText';
 import StarfieldBackground from '../components/StarfieldBackground';
+import AngularDivider from '../components/AngularDivider';
 
 const HeroSection: React.FC = () => {
   const headlineRef = useRef<HTMLHeadingElement>(null);
@@ -31,7 +32,7 @@ const HeroSection: React.FC = () => {
   };
 
   return (
-    <section id="home" className="relative min-h-[85vh] flex flex-col justify-center pt-24 pb-6 overflow-hidden">
+    <section id="home" className="relative min-h-[70vh] flex flex-col justify-center pt-24 pb-0 overflow-hidden">
       {/* Beautiful Gradient Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-800">
         {/* Primary gradient overlay */}
@@ -58,7 +59,7 @@ const HeroSection: React.FC = () => {
       <StarfieldBackground density="medium" />
 
       {/* Content */}
-      <div className="container mx-auto px-4 md:px-6 relative z-10">
+      <div className="container mx-auto px-4 md:px-6 relative z-10 pb-20">
         <motion.div 
           className="flex flex-col items-center text-center"
           variants={containerVariants}
@@ -136,6 +137,15 @@ const HeroSection: React.FC = () => {
           </motion.div>
         </motion.div>
       </div>
+
+      {/* Angular Glowing Divider - Moved Up */}
+      <AngularDivider 
+        className="absolute bottom-0 left-0 right-0" 
+        height={100}
+        fromColor="#0A0A0A"
+        toColor="#121212"
+        glowColor="#FFA500"
+      />
     </section>
   );
 };
