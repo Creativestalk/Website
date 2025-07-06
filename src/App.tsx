@@ -110,7 +110,7 @@ function App() {
                     viewport={{ once: true }}
                     transition={{ duration: 0.6, delay: 0.1 }}
                   >
-                    WE WORK FOR
+                    OUR CLIENTS
                   </motion.h2>
                 </motion.div>
 
@@ -124,55 +124,90 @@ function App() {
                 >
                   {/* Client 1 - DOCH */}
                   <motion.div 
-                    className="flex items-center justify-center p-6 bg-dark rounded-lg border border-white/5 hover:border-primary/20 transition-all duration-300 group"
+                    className="flex flex-col items-center group"
                     whileHover={{ scale: 1.05, y: -5 }}
                     transition={{ type: "spring", stiffness: 400, damping: 10 }}
                   >
-                    <span className="text-xl font-bold text-gray-medium group-hover:text-primary transition-colors duration-300">
+                    <div className="bg-dark rounded-lg border border-white/5 hover:border-primary/20 transition-all duration-300 mb-4 w-full h-28 overflow-hidden">
+                      <img 
+                        src="/DOCH" 
+                        alt="DOCH" 
+                        className="w-full h-full object-cover scale-125 group-hover:scale-150 transition-transform duration-300"
+                      />
+                    </div>
+                    <span className="text-sm font-medium text-gray-medium group-hover:text-primary transition-colors duration-300">
                       DOCH
                     </span>
                   </motion.div>
 
                   {/* Client 2 - LOCA LOKA */}
                   <motion.div 
-                    className="flex items-center justify-center p-6 bg-dark rounded-lg border border-white/5 hover:border-primary/20 transition-all duration-300 group"
+                    className="flex flex-col items-center group"
                     whileHover={{ scale: 1.05, y: -5 }}
                     transition={{ type: "spring", stiffness: 400, damping: 10 }}
                   >
-                    <span className="text-lg font-bold text-gray-medium group-hover:text-primary transition-colors duration-300">
+                    <div className="bg-dark rounded-lg border border-white/5 hover:border-primary/20 transition-all duration-300 mb-4 w-full h-28 overflow-hidden">
+                      <img 
+                        src="/Loca Loka" 
+                        alt="Loca Loka" 
+                        className="w-full h-full object-cover scale-125 group-hover:scale-150 transition-transform duration-300"
+                      />
+                    </div>
+                    <span className="text-sm font-medium text-gray-medium group-hover:text-primary transition-colors duration-300">
                       LOCA LOKA
                     </span>
                   </motion.div>
 
                   {/* Client 3 - THE HILLS MEDIA HOUSE */}
                   <motion.div 
-                    className="flex items-center justify-center p-6 bg-dark rounded-lg border border-white/5 hover:border-primary/20 transition-all duration-300 group"
+                    className="flex flex-col items-center group"
                     whileHover={{ scale: 1.05, y: -5 }}
                     transition={{ type: "spring", stiffness: 400, damping: 10 }}
                   >
-                    <span className="text-sm font-bold text-gray-medium group-hover:text-primary transition-colors duration-300 text-center">
+                    <div className="bg-dark rounded-lg border border-white/5 hover:border-primary/20 transition-all duration-300 mb-4 w-full h-28 overflow-hidden">
+                      <img 
+                        src="/Hills Media" 
+                        alt="The Hills Media House" 
+                        className="w-full h-full object-cover scale-125 group-hover:scale-150 transition-transform duration-300"
+                      />
+                    </div>
+                    <span className="text-sm font-medium text-gray-medium group-hover:text-primary transition-colors duration-300 text-center">
                       THE HILLS<br />MEDIA HOUSE
                     </span>
                   </motion.div>
 
                   {/* Client 4 - B FOR BRANDING */}
                   <motion.div 
-                    className="flex items-center justify-center p-6 bg-dark rounded-lg border border-white/5 hover:border-primary/20 transition-all duration-300 group"
+                    className="flex flex-col items-center group"
                     whileHover={{ scale: 1.05, y: -5 }}
                     transition={{ type: "spring", stiffness: 400, damping: 10 }}
                   >
-                    <span className="text-sm font-bold text-gray-medium group-hover:text-primary transition-colors duration-300 text-center">
+                    <div className="bg-dark rounded-lg border border-white/5 hover:border-primary/20 transition-all duration-300 mb-4 w-full h-28 overflow-hidden">
+                      <img 
+                        src="/B For branding" 
+                        alt="B For Branding" 
+                        className="w-full h-full object-cover scale-125 group-hover:scale-150 transition-transform duration-300"
+                      />
+                    </div>
+                    <span className="text-sm font-medium text-gray-medium group-hover:text-primary transition-colors duration-300 text-center">
                       B FOR<br />BRANDING
                     </span>
                   </motion.div>
 
                   {/* Client 5 - DHAARMINE STUDIOS */}
                   <motion.div 
-                    className="flex items-center justify-center p-6 bg-dark rounded-lg border border-white/5 hover:border-primary/20 transition-all duration-300 group col-span-2 md:col-span-1"
+                    className="flex flex-col items-center group col-span-2 md:col-span-1"
                     whileHover={{ scale: 1.05, y: -5 }}
                     transition={{ type: "spring", stiffness: 400, damping: 10 }}
                   >
-                    <span className="text-sm font-bold text-gray-medium group-hover:text-primary transition-colors duration-300 text-center">
+                    <div className="bg-dark rounded-lg border border-white/5 hover:border-primary/20 transition-all duration-300 mb-4 w-full h-28 overflow-hidden">
+                      <img 
+                        src="Dhaarmine"
+                        alt="Dhaarmine Studios" 
+                        className="w-full h-full object-cover scale-125 group-hover:scale-150 transition-transform duration-300"
+                      />
+                    </div>
+                    <span className="text-sm font-medium text-gray-medium group-hover:text-primary transition-colors duration-300 text-center">
                       DHAARMINE<br />STUDIOS
                     </span>
                   </motion.div>
