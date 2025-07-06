@@ -110,7 +110,7 @@ function App() {
                     viewport={{ once: true }}
                     transition={{ duration: 0.6, delay: 0.1 }}
                   >
-                    OUR CLIENTS
+                    SOME OF OUR CLIENTS
                   </motion.h2>
                 </motion.div>
 
