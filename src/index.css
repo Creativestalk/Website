@@ -100,20 +100,26 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .service-card {
-  @apply bg-dark-card bg-opacity-80 backdrop-blur-sm p-6 rounded-lg transition-all duration-300 cursor-pointer;
+  @apply bg-dark-card bg-opacity-80 backdrop-blur-sm p-6 rounded-lg cursor-pointer;
   border: 1px solid rgba(255, 165, 0, 0.1);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  transition: all 0.4s cubic-bezier(0.04, 0.62, 0.23, 0.98);
 }
 
 .service-card:hover {
   border-color: rgba(255, 165, 0, 0.2);
   box-shadow: 0 8px 30px rgba(255, 165, 0, 0.15);
-  transform: translateY(-2px);
+  transform: translateY(-2px) translateZ(0);
 }
 
 .service-icon-wrapper {
-  @apply p-3 rounded-lg bg-dark-lighter bg-opacity-50 transition-all duration-300;
+  @apply p-3 rounded-lg bg-dark-lighter bg-opacity-50 transition-all duration-500;
   border: 1px solid rgba(255, 165, 0, 0.1);
+  will-change: transform, box-shadow;
+  backface-visibility: hidden;
 }
 
 .service-card:hover .service-icon-wrapper {
@@ -123,7 +129,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .service-icon {
-  @apply text-primary transition-all duration-300;
+  @apply text-primary transition-all duration-500;
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
 .service-card:hover .service-icon {
@@ -131,13 +139,18 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .service-feature {
-  @apply py-2 px-4 bg-dark-lighter bg-opacity-40 rounded-md text-sm text-gray-light transition-all duration-300;
+  @apply py-3 px-4 bg-dark-lighter bg-opacity-40 rounded-md text-sm text-gray-light;
   border: 1px solid rgba(255, 165, 0, 0.05);
+  will-change: transform, background-color;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  transition: all 0.3s cubic-bezier(0.04, 0.62, 0.23, 0.98);
 }
 
 .service-feature:hover {
   @apply bg-opacity-60;
   border-color: rgba(255, 165, 0, 0.15);
+  transform: translateX(8px) translateZ(0);
 }
 
 .carousel-container {
