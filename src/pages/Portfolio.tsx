@@ -13,7 +13,8 @@ type Category =
   | 'animation'
   | 'podcasts'
   | 'promos'
-  | 'motiongraphics';
+  | 'motiongraphics'
+  | 'designs';
 
 // ✅ All categories now match the type definition
 export const categories: { id: Category; label: string }[] = [
@@ -24,6 +25,7 @@ export const categories: { id: Category; label: string }[] = [
   { id: 'podcasts', label: 'Podcasts' },
   { id: 'promos', label: 'Promo Cuts' },
   { id: 'motiongraphics', label: 'Motion Graphics' },
+  { id: 'designs', label: 'Designs' },
 ];
 
 interface PortfolioProps {
