@@ -43,15 +43,16 @@ const UploadFile: React.FC = () => {
   const handleYoutubeUrlChange = (url: string) => {
     setYoutubeUrl(url);
     const videoId = getYoutubeId(url);
-    const isInstagram = url.includes('instagram.com');
+    
+    // Improved Instagram Check
+    const isInstagram = url.includes('instagram.com/reels/') || url.includes('instagram.com/reel/') || url.includes('instagram.com/p/');
     
     if (videoId) {
       setThumbnail(`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`);
       setError('');
     } else if (isInstagram) {
-      // Instagram links don't have a direct thumbnail API like YouTube, 
-      // but we accept the URL as valid.
-      setThumbnail(''); 
+      // For Instagram, we use a placeholder icon or empty string as they don't provide easy static thumbnail URLs
+      setThumbnail('https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png'); 
       setError('');
     } else if (url) {
       setThumbnail('');
@@ -149,18 +150,21 @@ const UploadFile: React.FC = () => {
         // Trigger portfolio refresh across the app
         triggerPortfolioRefresh();
       } else if (uploadType === 'link' && youtubeUrl) {
-        // Save YouTube/Instagram link to Supabase database
+        // Clean the URL to ensure it doesn't redirect weirdly (removes tracking params)
+        const cleanUrl = youtubeUrl.split('?')[0];
+
+        // Save Link to Supabase database
         await portfolioService.add({
           title,
           category: newCategory || category,
           description,
-          youtube_url: youtubeUrl,
-          thumbnail,
+          youtube_url: cleanUrl,
+          thumbnail: thumbnail, // Uses YouTube thumb or Instagram placeholder
           views: views || undefined,
           upload_type: 'link'
         });
         
-        console.log('Video link saved to database');
+        console.log('Link saved to database');
         
         setSuccess(true);
         resetForm();
@@ -227,7 +231,7 @@ const UploadFile: React.FC = () => {
               <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
               <h2 className="text-2xl font-bold text-green-500 mb-2">Upload Successful!</h2>
               <p className="text-gray-medium mb-6">
-                Your {uploadType === 'file' ? 'file has been uploaded' : 'video link has been added'} to the portfolio and is now visible to all users.
+                Your {uploadType === 'file' ? 'file has been uploaded' : 'link has been added'} to the portfolio and is now visible to all users.
               </p>
               <div className="space-y-4">
                 <button
@@ -269,7 +273,7 @@ const UploadFile: React.FC = () => {
                   }`}
                 >
                   <LinkIcon className="h-5 w-5" />
-                  Social Link
+                  Video Link
                 </button>
               </div>
 
@@ -315,7 +319,7 @@ const UploadFile: React.FC = () => {
                     value={youtubeUrl}
                     onChange={(e) => handleYoutubeUrlChange(e.target.value)}
                     className="form-input"
-                    placeholder="Enter video URL (YouTube/Instagram)"
+                    placeholder="Enter YouTube or Instagram link"
                     required={uploadType === 'link'}
                   />
                 </div>
