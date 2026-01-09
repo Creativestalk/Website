@@ -10,7 +10,6 @@ type Category =
   | 'all'
   | 'reels'
   | 'videos'
-  | 'animation'
   | 'podcasts'
   | 'promos'
   | 'motiongraphics'
@@ -21,7 +20,6 @@ export const categories: { id: Category; label: string }[] = [
   { id: 'all', label: 'All Works' },
   { id: 'reels', label: 'Reel Edits' },
   { id: 'videos', label: 'Video Edits' },
-  { id: 'animation', label: 'Animation' },
   { id: 'podcasts', label: 'Podcasts' },
   { id: 'promos', label: 'Promo Cuts' },
   { id: 'motiongraphics', label: 'Motion Graphics' },
